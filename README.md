@@ -20,7 +20,7 @@ One orchestrator routes `/antwork <command>` to specialized skills, each of whic
 | `/antwork media` | [`antwork-media`](skills/antwork-media/SKILL.md) | Upload, attach, and manage post media. |
 | `/antwork audit` | [`antwork-audit`](skills/antwork-audit/SKILL.md) | Full social-presence audit with 5 parallel agents + a 0-100 Social Health Score. |
 
-You don't have to type the command — describe the intent ("schedule a LinkedIn post for Tuesday", "how did last month do?") and the [orchestrator](antwork/SKILL.md) routes to the right skill.
+You don't have to type the command — describe the intent ("schedule a LinkedIn post for Tuesday", "how did last month do?") and the [orchestrator](skills/antwork/SKILL.md) routes to the right skill.
 
 ## The audit's parallel agents
 
@@ -42,51 +42,50 @@ Once connected, the highest-value path for a new user is: **setup → voice → 
 
 ## Install
 
-### Claude Code (one command)
+### Claude Code plugin (recommended)
+
+This repo is also a Claude Code **plugin marketplace**. Installing the plugin wires up the Antwork MCP server *and* all skills + agents in one step:
+
+```sh
+/plugin marketplace add iker-gonzalez/antwork-skills
+/plugin install antwork-skills@antwork
+```
+
+That's it — the [`antwork` MCP server](.mcp.json) connects automatically (complete the OAuth prompt), and the orchestrator, 11 skills, and 5 audit agents load. Why the plugin over loose skills: the skills are useless until Antwork's MCP is connected, and the plugin ships that config bundled, so there's no separate connector setup.
+
+### Script install (no plugin)
+
+If you'd rather not use the plugin system, the script copies the skills + agents straight into `~/.claude/` (you still connect the [Antwork MCP](https://antwork.io) yourself):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/iker-gonzalez/antwork-skills/main/install.sh | bash
 ```
 
-This clones the repo and copies the orchestrator + 11 skills into `~/.claude/skills/`, the 5 audit agents into `~/.claude/agents/`, and the templates alongside the orchestrator. Start a new Claude Code session to load them.
-
-Prefer to clone first? Same result:
-
-```sh
-git clone https://github.com/iker-gonzalez/antwork-skills.git
-cd antwork-skills
-./install.sh
-```
-
-Remove everything with `./uninstall.sh` (or `curl -fsSL https://raw.githubusercontent.com/iker-gonzalez/antwork-skills/main/uninstall.sh | bash`).
-
-To install into a single project instead of globally:
-
-```sh
-mkdir -p .claude/skills .claude/agents
-cp -r antwork skills/antwork-* .claude/skills/
-cp agents/antwork-*.md .claude/agents/
-```
+Prefer to clone first? `git clone … && cd antwork-skills && ./install.sh`. Remove everything with `./uninstall.sh`.
 
 ### Claude.ai
 
-Skills submitted to the [Anthropic Skills Directory](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) surface automatically when you mention something they cover — no install step.
+Skills submitted to the [Anthropic Skills Directory](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) surface automatically when you mention something they cover — no install step. (Plugins are Claude-Code-only; the skills are the cross-surface format.)
 
 ## Repository layout
 
 ```
 antwork-skills/
-├── antwork/SKILL.md          # orchestrator — routes /antwork <command>
-├── skills/                   # 11 specialized skills
+├── .claude-plugin/
+│   ├── plugin.json           # plugin manifest
+│   └── marketplace.json      # self-hosted marketplace (lists this plugin)
+├── .mcp.json                 # Antwork MCP server — bundled & auto-connected
+├── skills/                   # orchestrator + 11 specialized skills
+│   ├── antwork/              # orchestrator — routes /antwork <command>
 │   ├── antwork-setup/        ├── antwork-campaign/
 │   ├── antwork-voice/        ├── antwork-ideas/
 │   ├── antwork-poster/       ├── antwork-analytics/
 │   ├── antwork-calendar/     ├── antwork-engage/
 │   ├── antwork-repurpose/    ├── antwork-media/
 │   └── antwork-audit/
-├── agents/                   # 5 parallel audit subagents
+├── agents/                   # 5 parallel audit subagents (auto-discovered)
 ├── templates/                # voice profile, calendar, campaign brief, launch week, report
-├── install.sh / uninstall.sh
+├── install.sh / uninstall.sh # script-install fallback
 └── README.md / LICENSE
 ```
 

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "antwork",
+  "owner": {
+    "name": "Iker Gonzalez",
+    "url": "https://github.com/iker-gonzalez"
+  },
+  "description": "Official Antwork plugins for Claude Code.",
+  "plugins": [
+    {
+      "name": "antwork-skills",
+      "source": ".",
+      "description": "Antwork social-media toolkit: orchestrator + 11 skills + 5 audit agents, with the Antwork MCP server pre-wired.",
+      "category": "integration",
+      "keywords": ["antwork", "social-media", "mcp"]
+    }
+  ]
+}
