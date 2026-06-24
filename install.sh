@@ -63,15 +63,10 @@ echo -e "\n${BLUE}Creating directories...${NC}"
 mkdir -p "$SKILLS_DIR"
 mkdir -p "$AGENTS_DIR"
 
-# Install main orchestrator
-echo -e "${BLUE}Installing orchestrator...${NC}"
-mkdir -p "$SKILLS_DIR/antwork"
-cp "$SCRIPT_DIR/antwork/SKILL.md" "$SKILLS_DIR/antwork/SKILL.md"
-echo -e "  ${GREEN}✓${NC} antwork/SKILL.md (orchestrator)"
-
-# Install sub-skills
-echo -e "\n${BLUE}Installing sub-skills...${NC}"
+# Install skills (orchestrator + sub-skills, all under skills/)
+echo -e "${BLUE}Installing skills...${NC}"
 SKILLS=(
+    "antwork"
     "antwork-setup"
     "antwork-voice"
     "antwork-poster"
@@ -145,7 +140,7 @@ echo -e "${GREEN}╔════════════════════
 echo -e "${GREEN}║           Installation Complete!              ║${NC}"
 echo -e "${GREEN}╚══════════════════════════════════════════════╝${NC}"
 echo ""
-echo -e "  Skills installed:    ${GREEN}$SKILL_COUNT${NC} (+ orchestrator)"
+echo -e "  Skills installed:    ${GREEN}$SKILL_COUNT${NC} (incl. orchestrator)"
 echo -e "  Agents installed:    ${GREEN}$AGENT_COUNT${NC}"
 echo -e "  Templates installed: ${GREEN}$TEMPLATE_COUNT${NC}"
 echo ""

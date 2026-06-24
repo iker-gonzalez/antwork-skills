@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "antwork-skills",
+  "displayName": "Antwork Skills",
+  "description": "Social-media command center for the Antwork MCP connector: a /antwork orchestrator routing to 11 skills (setup, voice, poster, calendar, repurpose, campaign, ideas, analytics, engage, media, audit), 5 parallel audit agents, and the Antwork MCP server pre-wired.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Iker Gonzalez",
+    "url": "https://github.com/iker-gonzalez"
+  },
+  "homepage": "https://antwork.io",
+  "repository": "https://github.com/iker-gonzalez/antwork-skills",
+  "license": "MIT",
+  "keywords": [
+    "antwork",
+    "social-media",
+    "scheduler",
+    "mcp",
+    "linkedin",
+    "marketing"
+  ]
+}
