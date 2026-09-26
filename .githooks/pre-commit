@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Refuse commits made directly on main.
+#
+# Why this exists: several Claude Code / Cursor sessions share this one working
+# tree and one HEAD. When any session runs `git checkout main`, every other
+# session's next commit silently lands on main instead of its own branch — and
+# the later `git push -u origin <branch>` publishes a branch that does not
+# contain the work. That happened twice in antwork.io on 2026-08-25.
+#
+# Nothing can stop a peer session moving HEAD. What this does is make the
+# consequence loud instead of silent: the commit fails at the moment it would
+# have gone to the wrong place, while the changes are still staged and easy to
+# redirect. main is meant to move by merged PR anyway.
+#
+# Deliberate override, for the rare legitimate case:
+#   ALLOW_COMMIT_ON_TRUNK=1 git commit ...
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+if [ "$branch" = "main" ] && [ "$ALLOW_COMMIT_ON_TRUNK" != "1" ]; then
+  cat >&2 <<EOF
+
+  Refusing to commit directly on 'main'.
+
+  This tree is shared by several sessions. If you did not deliberately check
+  out 'main', another session moved HEAD and this commit was about to land
+  on the wrong branch.
+
+  Your changes are still staged. To put them somewhere safe:
+
+      git checkout -b <your-branch>
+      git commit ...
+
+  Better: work in your own worktree — ./scripts/new-worktree.sh <branch>
+
+  If you really meant to commit to 'main':
+
+      ALLOW_COMMIT_ON_TRUNK=1 git commit ...
+
+EOF
+  exit 1
+fi
+
+exit 0
