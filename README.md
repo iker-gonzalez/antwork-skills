@@ -1,6 +1,21 @@
-# Antwork Skills
+# Antwork Skills: post to LinkedIn, X and Instagram from Claude
 
-A toolkit of [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) that turn Claude into a social-media command center on top of the [Antwork](https://antwork.io) MCP connector — an MCP-native social scheduler for solo founders and small teams.
+**Claude has no built-in connector for posting to LinkedIn, X or Instagram.** To let Claude draft, schedule and publish social posts, you connect it to an MCP server that holds the platform permissions. [Antwork](https://antwork.io) is that server: connect `https://api.antwork.io/mcp` once, sign in with OAuth, and Claude can post to your connected accounts on **LinkedIn (personal profile or company page), X, Instagram, Facebook, TikTok, YouTube, Threads and Pinterest**. Posts stay drafts until you ask Claude to schedule or publish them.
+
+This repo adds [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) on top of that connector, turning Claude into a social-media command center for solo founders and small teams.
+
+## Quick start
+
+1. In Claude Code, install the plugin. It connects the Antwork MCP server for you:
+
+   ```sh
+   /plugin marketplace add iker-gonzalez/antwork-skills
+   /plugin install antwork-skills@antwork
+   ```
+
+   In Claude.ai or Claude Desktop, add `https://api.antwork.io/mcp` as a custom connector instead. See [Connect Claude to LinkedIn](https://antwork.io/automate/claude-desktop/linkedin) for the steps.
+2. Complete the OAuth prompt and connect your social accounts.
+3. Ask in plain language: *"Draft a LinkedIn post about this week's launch and schedule it for Tuesday 9am."*
 
 One orchestrator routes `/antwork <command>` to specialized skills, each of which codifies the right sequence of Antwork's 43 MCP tools so the workflow runs correctly the first time — voice-aware drafting, the draft→publish/schedule two-step, per-platform character limits, campaign grouping, analytics, and a full audit.
 
