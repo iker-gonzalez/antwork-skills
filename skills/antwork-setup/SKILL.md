@@ -47,14 +47,14 @@ Supported platforms: `linkedin`, `x`, `facebook`, `instagram`, `threads`, `youtu
 
 ## 5. Set posting defaults
 
-Two calls make the workspace publish-ready:
+One call, `update_workspace`, makes the workspace publish-ready. Pass only the fields you are changing:
 
-- `update_workspace_settings(timezone, preferred_times)` — `timezone` is an IANA name (e.g. `"Europe/Madrid"`, `"America/New_York"`); `preferred_times` is a list of `HH:MM` strings (e.g. `["09:00", "18:00"]`). These drive scheduling suggestions and the calendar. Ask the user's timezone if you don't already know it — don't guess.
-- `update_workspace_identity(name, website, logo_url)` — brand identity used when drafting. Changing it bumps `brandVersion`, which downstream voice/drafting context keys off.
+- `timezone` and `preferred_times` — `timezone` is an IANA name (e.g. `"Europe/Madrid"`, `"America/New_York"`); `preferred_times` is a list of `HH:MM` strings (e.g. `["09:00", "18:00"]`). These drive scheduling suggestions and the calendar. Ask the user's timezone if you don't already know it — don't guess.
+- `name`, `website`, `logo_url` — brand identity used when drafting. Changing it bumps `brandVersion`, which cached drafting context keys off.
 
 ## 6. Hand off to voice
 
-A connected account with no voice profile drafts in a generic tone. Once accounts are healthy, recommend a voice pass (the `antwork-voice` skill / `prepare_voice_analysis` → `save_voice_analysis`) for each platform the user will actually post on. That's the difference between "it posts" and "it sounds like me."
+Drafts take their voice from each account's recent posts, read fresh every time by `get_post_context`; nothing needs to be set up. An account with no post history has nothing to imitate, so for those suggest the `antwork-voice` skill, which asks the user for a few sample posts. That's the difference between "it posts" and "it sounds like me."
 
 ## Quick diagnostic: "why won't my posts publish?"
 

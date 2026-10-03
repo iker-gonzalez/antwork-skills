@@ -17,11 +17,10 @@ Antwork is an MCP-native social-media scheduler. This skill codifies the mistake
 Call `get_post_context(platform, account_id)` before writing any copy. It returns:
 
 - **Brand identity** — workspace name, website, logo, `brandVersion`.
-- **Voice profile** for that account — tone, style, emoji/hashtag policy, CTA patterns, example phrases.
-- **Recent posts** (the last 3) so you don't repeat yourself.
-- **`voiceStale`** — if true (no profile, or older than 30 days), recommend a quick `antwork-voice` pass first, or ask the user once for tone ("formal, founder-mode, casual?") rather than guessing.
+- **Recent posts** — up to 15 of that account's published posts with their engagement. These ARE the voice; there is no stored voice profile. They also show which themes not to repeat.
+- **No history?** An empty `recentPosts` means there is nothing to imitate. Ask the user for 3–5 sample posts, or once for tone ("formal, founder-mode, casual?"), rather than guessing.
 
-The voice profile and brand are the ground truth. Match them — pronouns ("I/my" for solo founders, "we/our" for teams), tone, and the account's recurring vocabulary.
+The recent posts and brand are the ground truth. Match them, weighting the posts that performed: pronouns ("I/my" for solo founders, "we/our" for teams), tone, length, emoji and hashtag habits, and the account's recurring vocabulary.
 
 ## 3. The platform model: one account per post
 
@@ -38,7 +37,7 @@ Per-platform hard limits, enforced by the server at schedule/publish time:
 |---|---|---|---|
 | X | 280 | Instagram | 2,200 |
 | Threads | 500 | LinkedIn | 3,000 |
-| Pinterest | 800 | TikTok | 4,000 |
+| Pinterest | 800 | TikTok | 2,200 |
 | YouTube | 5,000 | Facebook | 63,206 |
 
 Keep posts short by default; LinkedIn is the one place where longer (300–600 words) is fine. If copy is over limit, `schedule_post`/`publish_post` will refuse — trim before dispatching, don't let the call bounce.
@@ -47,8 +46,8 @@ Keep posts short by default; LinkedIn is the one place where longer (300–600 w
 
 `create_post` creates a **DRAFT**. It does NOT publish or schedule on its own. (You can pass `scheduled_for` to `create_post`, but the reliable, legible pattern is two explicit steps.)
 
-- **Schedule for later:** `create_post` → `schedule_post(post_id, scheduled_for)` with an ISO 8601 time. Use `get_optimal_posting_times` to land on the workspace's preferred windows + timezone.
-- **Publish now:** `create_post` → `publish_post(post_id)`. It waits up to ~60s and returns live URLs per platform.
+- **Schedule for later:** `create_post` → `schedule_post(post_id, scheduled_for)` with an ISO 8601 time. Use `get_workspace_settings` to land on the workspace's preferred posting times + timezone.
+- **Publish now:** `create_post` → `publish_post(post_id)`. It waits up to ~25s and returns the live post URL.
 
 Always complete the second step when the user said "schedule" or "publish now." Telling the user "scheduled!" after only `create_post` is false.
 

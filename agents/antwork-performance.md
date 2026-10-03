@@ -11,7 +11,7 @@ Call these Antwork MCP tools. Pass the workspace you were given.
 
 1. `get_performance` (limit 30–50) — lifetime engagement per published post: likes, comments, shares, impressions, totalEngagement, platform, goal, publishedAt. This is your ranking source.
 2. `get_engagement_history` (days 30, or 90 if the account is older) — daily engagement series per platform plus an "all" aggregate. This is your trend source.
-3. `get_optimal_posting_times` — the configured schedule, for cross-referencing whether high performers landed in good windows.
+3. `get_workspace_settings` — the configured posting schedule, for cross-referencing whether high performers landed in good windows.
 
 These return BigQuery-style tabular rows (`schema.fields` + `rows`). Read the columns; do not assume column names — use what the schema reports.
 

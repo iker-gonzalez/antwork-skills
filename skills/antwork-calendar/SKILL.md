@@ -12,7 +12,7 @@ Antwork is an MCP-native social scheduler. A calendar is just a set of drafts ea
 Never schedule into a vacuum. First call:
 
 - `get_calendar(date_from, date_to)` — what's already scheduled or published in the target window. Plan *around* it; don't double-book a slot or repeat a topic that just went out.
-- `get_optimal_posting_times` — the workspace's configured posting times and timezone, plus which accounts are selected per platform. These times are your default slots.
+- `get_workspace_settings` — the workspace's configured posting times (`defaultPostingSchedule`) and timezone, plus which accounts are selected per platform. These times are your default slots.
 - `list_social_accounts` — the accounts you can target (with `account_id`, platform, handle, token health). Skip accounts whose `tokenHealthStatus` isn't `healthy` — flag them for reconnect instead of scheduling onto a dead token.
 
 If multiple workspaces exist and none is default, resolve with `set_default_workspace` before anything else.
@@ -23,7 +23,7 @@ Editing a plan is cheaper than editing fifteen drafts. Present the calendar as a
 
 `# | date · time (tz) | account / platform | hook | goal`
 
-Use `templates/content-calendar.md` as the skeleton. Space slots across the `get_optimal_posting_times` windows — don't stack three posts at 09:00. Respect per-platform cadence norms (X tolerates several a day; LinkedIn one a day is plenty). Vary topics and formats across the week so the feed doesn't read as repetitive.
+Use `templates/content-calendar.md` as the skeleton. Space slots across the workspace's preferred posting times — don't stack three posts at 09:00. Respect per-platform cadence norms (X tolerates several a day; LinkedIn one a day is plenty). Vary topics and formats across the week so the feed doesn't read as repetitive.
 
 Do **not** call `create_post` during planning.
 
@@ -31,11 +31,11 @@ Do **not** call `create_post` during planning.
 
 Once approved, work slot by slot. For each row, before writing copy:
 
-- `get_post_context(platform, account_id)` — pulls brand, the account's voice profile, recent posts, and a `voiceStale` flag. Match that voice; don't impose a house style. If `voiceStale` is true, mention it and offer to refresh via the `antwork-voice` skill before drafting a whole week in a stale voice.
+- `get_post_context(platform, account_id)` — brand plus the account's last 15 posts with their engagement. Those posts are the voice: match them, weighting the ones that performed, and don't impose a house style. With several accounts, `get_post_context(account_ids=[...])` loads them all in one call. If an account has no post history, ask the user for 3–5 sample posts before drafting a whole week for it.
 
 Write each post to its single target account. There is no multi-platform field — **one `create_post` per account**. If the same idea should run on three accounts, that's three `create_post` calls; give them a shared `campaign_id` so they stay grouped.
 
-Respect the hard character limit for each platform (X 280, Threads 500, Pinterest 800, Instagram 2200, LinkedIn 3000, TikTok 4000, YouTube 5000, Facebook 63206). `schedule_post` refuses anything over the limit, so trim before you schedule.
+Respect the hard character limit for each platform (X 280, Threads 500, Pinterest 800, Instagram 2200, LinkedIn 3000, TikTok 2200, YouTube 5000, Facebook 63206). `schedule_post` refuses anything over the limit, so trim before you schedule.
 
 ## 4. Create, then schedule — the two-step
 
@@ -55,5 +55,5 @@ After scheduling the batch, call `get_calendar` again for the window and report 
 ## 6. Edits and reschedules
 
 - Move a slot: `update_post(post_id, scheduled_for=...)` — it reschedules only when the time actually changes.
-- Reuse a strong post on another account: `duplicate_post(post_id, account_id=..., text=...)` to clone and retarget, then `schedule_post` the clone.
+- Reuse a strong post on another account: `get_post(post_id)` for the copy, then `create_post` on the other account with text rewritten in that account's voice, then `schedule_post`.
 - Pull a slot: `update_post(post_id, status="draft")` to take it off the calendar without deleting, or `delete_post` to remove it (confirm first — deleting a scheduled draft is a hard delete).

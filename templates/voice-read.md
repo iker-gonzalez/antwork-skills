@@ -1,10 +1,12 @@
-# Voice Profile — `<account handle>` (`<platform>`)
+# Voice read — `<account handle>` (`<platform>`)
 
-Fill-in template documenting the shape of an Antwork voice analysis. This is what
-`save_voice_analysis(account_id, analysis)` persists. One profile **per account** —
-a personal LinkedIn voice is not the same as a company X voice.
+The shape of a voice read: what an account's recent posts say about how it
+writes. Antwork stores no voice profile. `get_post_context` returns the
+account's last 15 posts every time, and this is written fresh from them, used
+for the drafts in this conversation, and not saved anywhere. One read **per
+account**: a personal LinkedIn voice is not the same as a company X voice.
 
-> Built from `<N>` posts · Last synced `<date>` · Status: `completed`
+> Read from `<N>` posts returned by `get_post_context` on `<date>`
 
 ---
 

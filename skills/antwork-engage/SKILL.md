@@ -15,7 +15,7 @@ To see what's actually live, call `fetch_platform_posts` — recent published po
 
 ## 2. Stay in voice
 
-Before drafting any comment or reply, pull `get_post_context(platform, account_id)` for the brand voice, recent posts, and tone. A comment in the wrong voice is more jarring than a post in the wrong voice — it shows up under someone else's content. If `voiceStale` is true, mention it; offer a refresh (see `antwork-voice`) but don't block on it.
+Before drafting any comment or reply, pull `get_post_context(platform, account_id)`: the account's recent posts are its voice. A comment in the wrong voice is more jarring than a post in the wrong voice — it shows up under someone else's content.
 
 ## 3. Comment and reply — LinkedIn only
 

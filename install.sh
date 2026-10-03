@@ -148,7 +148,7 @@ echo -e "${YELLOW}Prerequisite:${NC} connect the Antwork MCP server in Claude �
 echo ""
 echo -e "${CYAN}Available commands:${NC}"
 echo "  /antwork setup               Connect accounts, set timezone & posting times"
-echo "  /antwork voice [account]     Build/refresh a per-account voice profile"
+echo "  /antwork voice [account]     Read an account's voice from its posts"
 echo "  /antwork post <idea>         Draft → schedule/publish a post"
 echo "  /antwork calendar <theme>    Plan & batch-schedule a content calendar"
 echo "  /antwork repurpose <source>  One piece → platform-native variants"
