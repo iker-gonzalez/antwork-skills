@@ -63,6 +63,17 @@ curl -fsSL https://raw.githubusercontent.com/iker-gonzalez/antwork-skills/main/i
 
 Prefer to clone first? `git clone … && cd antwork-skills && ./install.sh`. Remove everything with `./uninstall.sh`.
 
+### OpenClaw / ClawHub
+
+`clawhub/antwork/` is a **self-contained** skill published to [ClawHub](https://clawhub.ai), OpenClaw's skill registry:
+
+```sh
+clawhub install iker-gonzalez/antwork
+mcporter config add antwork --url https://api.antwork.io/mcp --auth oauth
+```
+
+It is deliberately not the orchestrator above. ClawHub publishes one folder, so a skill that routes to 11 siblings that were never installed would be broken — this one inlines the setup, the drafting protocol, the character limits and the draft→publish two-step in a single file.
+
 ### Claude.ai
 
 Skills submitted to the [Anthropic Skills Directory](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) surface automatically when you mention something they cover — no install step. (Plugins are Claude-Code-only; the skills are the cross-surface format.)
@@ -85,6 +96,7 @@ antwork-skills/
 │   └── antwork-audit/
 ├── agents/                   # 5 parallel audit subagents (auto-discovered)
 ├── templates/                # voice read, calendar, campaign brief, launch week, report
+├── clawhub/                  # self-contained skill published to ClawHub
 ├── install.sh / uninstall.sh # script-install fallback
 └── README.md / LICENSE
 ```
