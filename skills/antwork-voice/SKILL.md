@@ -1,56 +1,44 @@
 ---
 name: antwork-voice
-description: Use when the user wants to build, refresh, or audit a per-account voice profile in Antwork so drafts sound like them — including analyzing their existing posts to extract tone, capturing brand voice for a new account, or fixing AI-sounding drafts. Trigger on phrases like "learn my voice", "match my writing style", "my posts sound like a robot", "set up my brand voice", "refresh my voice profile", "analyze my LinkedIn tone", or any request to make Antwork posts sound on-brand.
+description: Use when the user wants Antwork drafts to sound like them — reading an account's voice from its real posts, capturing a voice for an account with no history, auditing whether drafts match, or fixing AI-sounding copy. Trigger on phrases like "learn my voice", "match my writing style", "my posts sound like a robot", "set up my brand voice", "analyze my LinkedIn tone", or any request to make Antwork posts sound on-brand.
 ---
 
-# Building voice profiles in Antwork
+# Reading an account's voice in Antwork
 
-A voice profile is Antwork's per-account fingerprint of how someone writes — tone, vocabulary, emoji/hashtag habits, CTA patterns. It is the ground truth every drafting skill reads before writing copy. A stale or missing profile is the #1 reason Antwork drafts read as generic AI. This skill captures and refreshes it correctly.
+Antwork keeps **no stored voice profile**. An account's voice is its own recent posts: `get_post_context` returns up to 15 of them, with their engagement, every time it is called. This skill turns those posts into a precise read of how the account writes, so drafts match it instead of sounding like generic AI.
 
-## 0. One profile PER account, not per user
+## 0. One voice PER account, not per user
 
-Voice lives on the **social account** (`save_voice_analysis` takes `account_id`), not on the workspace or the user. A founder's personal LinkedIn voice is not their company X voice. Analyze and save each account separately. Never copy one account's profile onto another.
+Voice belongs to the **social account**. A founder's personal LinkedIn is not their company X. Read each account on its own and never carry one account's voice onto another.
 
-## 1. Check staleness before doing anything
+## 1. Load the posts
 
-Call `get_post_context(platform, account_id)`. It returns the current profile plus two signals:
+Call `get_post_context(platform, account_id)`, or `get_post_context(account_ids=[...])` for several accounts in one call. `recentPosts` holds the account's published posts with likes, comments, shares and impressions. Weight the posts that performed: they are the voice the audience responds to.
 
-- `voiceStale: true` — profile is missing, older than 30 days, or its status isn't `completed`.
-- `voiceLastSyncAt` — when it was last built.
+**No history?** An empty `recentPosts` means there is nothing to imitate. Ask the user to paste 3–5 posts that sound like them (or that they wish they had written) and read those instead. Never invent a voice from nothing.
 
-If `voiceStale` is false and the user just wants to draft, you're done — hand back to `antwork-poster`. Only run the analysis loop below when the profile is stale, missing, or the user explicitly asks to refresh it.
+## 2. Read the voice, with evidence
 
-## 2. Fetch posts for analysis — `prepare_voice_analysis`
-
-Call `prepare_voice_analysis(platform, account_id, max_posts)` (default 50; range 5–100). It returns the account's recent posts **plus the analysis schema** you must fill.
-
-**LinkedIn personal accounts can't fetch their own posts** — the `r_member_social` scope is closed. If the response signals `unsupportedFetch`, fall back to the account's **Antwork-published** posts instead (posts shipped through Antwork are readable). If there aren't enough of those yet, tell the user the profile will be thin and ask them to paste 3–5 representative posts so you have material to analyze — don't fabricate a voice from nothing.
-
-## 3. Analyze the posts yourself, against the returned schema
-
-You do the analysis with your own reading — there is no separate model call. Read the posts and extract, matching the schema fields `prepare_voice_analysis` returned:
+Read the posts yourself and name what you see, quoting real phrases. Use `templates/voice-read.md` for the full shape:
 
 - **Tone** — formal / founder-mode / playful / corporate / contrarian. Name it, don't default to it.
-- **Voice & pronouns** — first-person singular ("I/my") for solo creators, "we/our" for brands/teams. Read it off the posts.
-- **Style** — sentence length, paragraph rhythm, use of line breaks, lists, one-liners.
-- **Emoji policy** — none / sparing / signature emoji. Note specific ones they actually use.
-- **Hashtag policy** — count, placement (inline vs. footer), branded tags.
-- **CTA patterns** — how they close: question, soft ask, hard CTA, link drop, none.
-- **Example phrases & mannerisms** — recurring openers, signature words, the things that make it *them*.
-- **Do / don't** — explicit anti-patterns (e.g. "never uses 'Here's the thing:'", "no em-dash openers").
+- **Voice & pronouns** — "I/my" for solo creators, "we/our" for brands and teams. Read it off the posts.
+- **Style** — sentence length, paragraph rhythm, line breaks, lists, one-liners.
+- **Emoji** — none / sparing / signature, and which ones they actually use.
+- **Hashtags** — count, placement (inline vs. footer), branded tags.
+- **Closers** — question, soft ask, hard CTA, link drop, none.
+- **Signature phrases & mannerisms** — recurring openers, words, habits that make it *them*.
 
-Be specific and evidence-based — quote real phrases from their posts. A profile that says "professional and engaging" is useless; one that says "opens with a blunt one-line claim, no emoji, closes with a single question" is gold.
+A read that says "professional and engaging" is useless. One that says "opens with a blunt one-line claim, no emoji, closes with a single question" is what makes a draft sound right.
 
-## 4. Save it — `save_voice_analysis`
+## 3. Show it, then use it
 
-Call `save_voice_analysis(account_id, analysis, post_count)` with the filled JSON matching the schema. Pass `post_count` so freshness is tracked accurately. This persists the profile to the social account.
+Give the user the 2–3 most distinctive traits in a few lines so they can correct you, then apply the read to every draft for that account in this conversation. Nothing is saved: the next session reads the posts again, which means the voice keeps up as the account's writing changes.
 
-## 5. Confirm it took
+## 4. Auditing drafts against the voice
 
-Re-call `get_post_context(platform, account_id)` and confirm `voiceStale` is now false and the profile is populated. Report back a short summary of the captured voice (tone + the 2–3 most distinctive traits) so the user can sanity-check it before you draft anything.
+When the user says a draft sounds off, compare it line by line with the read: wrong pronouns, emoji the account never uses, a closer it never writes, a length far outside its range. Redraft with `update_post`, not a new post.
 
-## 6. Across every voice — kill the AI tells
+## 5. Across every voice — kill the AI tells
 
-Whatever the profile says, strip the phrases that mark text as machine-written: "Here's the thing:", "Let me break it down", "Buckle up", "In today's fast-paced world", emoji-heavy openers, and the relentless rule-of-three. The profile defines what to *do*; this is the universal *don't*.
-
-See `templates/voice-profile.md` for the field-by-field shape of a complete profile.
+Whatever the account's voice, strip the phrases that mark text as machine-written: "Here's the thing:", "Let me break it down", "Buckle up", "In today's fast-paced world", emoji-heavy openers, and the relentless rule-of-three. The read says what to *do*; this is the universal *don't*.

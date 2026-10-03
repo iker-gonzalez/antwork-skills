@@ -1,6 +1,6 @@
 # Content Calendar — {{workspace}} · {{period}}
 
-Timezone: {{IANA timezone}} · Optimal slots: {{from get_optimal_posting_times}}
+Timezone: {{IANA timezone}} · Preferred slots: {{defaultPostingSchedule from get_workspace_settings}}
 Status legend: `idea` → `draft` → `scheduled` → `published`
 
 ## Week of {{start date}}

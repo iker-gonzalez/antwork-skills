@@ -12,7 +12,7 @@ Generic brainstorming is worthless — the user can get "10 LinkedIn post ideas"
 Before generating anything, gather:
 
 1. `get_performance(limit)` — the account's top posts by lifetime engagement. This is the proven lane.
-2. `get_post_context(platform, account_id)` — the voice profile, brand context, and recent 3 posts. If `voiceStale` is true, hand to **`antwork-voice`** first; ideas in the wrong voice waste everyone's time.
+2. `get_post_context(platform, account_id)` — brand context and up to 15 recent posts with engagement. Those posts are the voice; read them before writing a single hook.
 
 If the account is new and has no performance history, say so plainly and ideate from voice + brand + the user's stated goals instead — but don't pretend you're being data-driven when you aren't.
 
@@ -31,7 +31,7 @@ Give a numbered list. Each idea is one row:
 - **Angle** — the one-sentence shape of the post.
 - **Why** — the evidence: which past winner or voice trait it draws on.
 
-Rank by expected payoff (proven-lane ideas first). Keep hooks tight and in-voice — apply the same anti-AI-tells rule the voice profile enforces (no "Here's the thing:", no "Let me break it down", no emoji-spray openers).
+Rank by expected payoff (proven-lane ideas first). Keep hooks tight and in-voice — apply the anti-AI-tells rule from `antwork-voice` (no "Here's the thing:", no "Let me break it down", no emoji-spray openers).
 
 ## 4. Hand off cleanly
 

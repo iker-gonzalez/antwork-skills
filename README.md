@@ -9,7 +9,7 @@ One orchestrator routes `/antwork <command>` to specialized skills, each of whic
 | Command | Skill | What it does |
 |---|---|---|
 | `/antwork setup` | [`antwork-setup`](skills/antwork-setup/SKILL.md) | Connect accounts, set workspace timezone + posting times, brand identity. **Run first.** |
-| `/antwork voice [account]` | [`antwork-voice`](skills/antwork-voice/SKILL.md) | Build/refresh a per-account voice profile from real posts. |
+| `/antwork voice [account]` | [`antwork-voice`](skills/antwork-voice/SKILL.md) | Read an account's voice from its real posts, or capture one from samples. |
 | `/antwork post <idea>` | [`antwork-poster`](skills/antwork-poster/SKILL.md) | Draft → schedule/publish a post (single account or multi-platform fan-out). |
 | `/antwork calendar <theme>` | [`antwork-calendar`](skills/antwork-calendar/SKILL.md) | Plan and batch-schedule a content calendar. |
 | `/antwork repurpose <source>` | [`antwork-repurpose`](skills/antwork-repurpose/SKILL.md) | One piece → platform-native variants, grouped as a campaign. |
@@ -84,7 +84,7 @@ antwork-skills/
 │   ├── antwork-repurpose/    ├── antwork-media/
 │   └── antwork-audit/
 ├── agents/                   # 5 parallel audit subagents (auto-discovered)
-├── templates/                # voice profile, calendar, campaign brief, launch week, report
+├── templates/                # voice read, calendar, campaign brief, launch week, report
 ├── install.sh / uninstall.sh # script-install fallback
 └── README.md / LICENSE
 ```

@@ -20,9 +20,9 @@ For launch-shaped campaigns, use `templates/launch-week.md` for the classic arc:
 
 ## 2. Pull context and design the arc
 
-- `get_optimal_posting_times` — default slots and timezone.
+- `get_workspace_settings` — default posting times and timezone.
 - `get_calendar(date_from, date_to)` — so the campaign weaves around existing posts, not on top of them.
-- `get_post_context(platform, account_id)` per account — voice, brand, `voiceStale`. Refresh stale voices (via `antwork-voice`) before drafting a multi-day sequence.
+- `get_post_context(account_ids=[...])` — brand plus each account's recent posts, which are its voice. One call for every account in the campaign.
 
 Design the sequence so each post has a distinct job (tease → reveal → proof → last call), not five rewordings of the same announcement.
 
@@ -53,7 +53,7 @@ For a hard launch moment you want live to the second, `publish_post(post_id)` at
 ## 6. Track the campaign as it runs
 
 - `list_posts(status="scheduled")` and `get_calendar` — confirm the full arc is queued and see it laid out.
-- `search_posts(query, ...)` or filter by the campaign topic to pull the set together.
+- `list_posts(campaign_id=...)` pulls exactly the campaign's posts; `list_posts(query=...)` finds posts by keyword.
 - After posts go live, hand off to the `antwork-analytics` skill — filter on the campaign's posts (shared `campaign_id`, per-post `goal`) to measure against the success metric.
 - Any post that failed to publish: `retry_failed_post(post_id)`.
 

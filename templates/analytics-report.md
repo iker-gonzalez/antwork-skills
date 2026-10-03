@@ -3,7 +3,7 @@
 **Date:** `<YYYY-MM-DD>`  ·  **Range covered:** `<last N days / date_from–date_to>`  ·  **Accounts:** `<platforms>`
 
 > Numbers are lifetime/period totals from Antwork as of the date above. Stored
-> metrics refresh nightly; live figures (where noted) came from `refresh_post_metrics`.
+> metrics refresh every 6 hours.
 
 ---
 

@@ -21,7 +21,7 @@ This spine is what gets reshaped per platform — not the prose itself.
 
 Confirm which accounts to publish to (`list_social_accounts` if unsure — note `account_id`, platform, token health). For **each** target platform, before writing:
 
-- `get_post_context(platform, account_id)` — brand, that account's voice profile, recent posts, `voiceStale` flag. Each account has its own voice; LinkedIn-you and X-you are not the same writer. If `voiceStale`, say so and offer the `antwork-voice` refresh first.
+- `get_post_context(account_ids=[...])` — brand plus each account's recent posts, which are its voice. Each account has its own; LinkedIn-you and X-you are not the same writer.
 
 ## 3. Reshape — do not reuse
 
@@ -49,7 +49,7 @@ The shared `campaign_id` keeps the variants grouped so they can be tracked, comp
 
 Show the drafts side by side (platform → variant) and let the user edit or drop any before anything goes out. Then per the user's intent:
 
-- **Schedule**: `schedule_post(post_id, scheduled_for)` (ISO 8601) — stagger across the day/week using `get_optimal_posting_times` rather than firing all variants at once.
+- **Schedule**: `schedule_post(post_id, scheduled_for)` (ISO 8601) — stagger across the day/week using the preferred times from `get_workspace_settings` rather than firing all variants at once.
 - **Publish now**: `publish_post(post_id)` — it returns live URLs per platform; report them back, one line per account.
 
 Never claim a variant is "posted" after only `create_post`. Complete the second step.

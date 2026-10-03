@@ -24,9 +24,9 @@ Launch all five in a single batch so they run concurrently. Each is read-only an
 
 | Dimension | Agent | Weight | Primary MCP tools |
 |---|---|---|---|
-| Performance | `antwork-performance` | 30% | `get_performance`, `get_engagement_history`, `get_optimal_posting_times` |
+| Performance | `antwork-performance` | 30% | `get_performance`, `get_engagement_history`, `get_workspace_settings` |
 | Voice Consistency | `antwork-voice-analyst` | 20% | `get_post_context` (per account), `list_posts` |
-| Cadence & Timing | `antwork-cadence` | 20% | `list_posts`, `get_calendar`, `get_optimal_posting_times` |
+| Cadence & Timing | `antwork-cadence` | 20% | `list_posts`, `get_calendar`, `get_workspace_settings` |
 | Content Quality | `antwork-content` | 20% | `fetch_platform_posts`, `get_post`, `list_posts` |
 | Platform Coverage & Growth | `antwork-growth` | 10% | `list_social_accounts`, `get_workspace_settings` |
 
@@ -54,10 +54,10 @@ Produce a client-ready Markdown file with:
 
 ## 5. Close with the next move
 
-End by offering to execute the top action immediately through the relevant skill — e.g. "Want me to refresh the stale X voice profile now?" (`antwork-voice`) or "Want me to fill next week's empty slots?" (`antwork-calendar`). The audit is only valuable if it turns into shipped posts.
+End by offering to execute the top action immediately through the relevant skill — e.g. "Want me to redraft the off-voice X posts in the account's real voice?" (`antwork-voice`) or "Want me to fill next week's empty slots?" (`antwork-calendar`). The audit is only valuable if it turns into shipped posts.
 
 ## Guardrails
 
 - The audit is **read-only**. Never create, edit, schedule, publish, or delete anything during an audit.
-- `refresh_post_metrics` burns platform API quota — only suggest it; don't have agents call it during a routine audit unless the user explicitly wants live-refreshed numbers.
+- Metrics refresh every 6 hours on their own; posts published in the last few hours have no numbers yet. Say so instead of scoring them as zero.
 - Quote real numbers from the analytics rows. Never fabricate engagement figures or invent posts that aren't in the data.

@@ -13,14 +13,14 @@ Antwork's analytics tools return **BigQuery-style tabular data** — `{ schema: 
 |---|---|---|
 | "What are my best posts?" | `get_performance(limit)` | Lifetime totals per published post (likes, comments, shares, impressions, totalEngagement). Best for **rankings**. 1–50, default 30. |
 | "How is engagement trending?" | `get_engagement_history(days)` | Daily series per platform + an "all" aggregate, plus platformTotals/rangeTotals. Best for **trends over time**. 1–365 days, default 30. |
-| "How did *this* post grow?" | `get_post_history(post_id, days?)` | Per-day metrics for one post, both cumulative and daily-delta. Best for **single-post lifecycle**. Omit `days` for full history. |
-| "When should I post?" | `get_optimal_posting_times()` | The workspace's configured times + timezone + selected accounts. |
+| "How did *this* post grow?" | `get_engagement_history(post_id=..., days?)` | Per-day metrics for one post, both cumulative and daily-delta. Best for **single-post lifecycle**. Omit `days` for full history. |
+| "When should I post?" | `get_workspace_settings()` | The workspace's configured times (`defaultPostingSchedule`) + timezone + selected accounts. |
 
 Start with `get_performance` for almost any "how am I doing" ask, then drill in with the others.
 
-## 2. Don't burn live quota by reflex
+## 2. Numbers are a few hours old, by design
 
-`refresh_post_metrics(post_ids)` hits the platform APIs **live, right now** — ~1–2s per post, max 25, and it spends real platform rate-limit quota. The stored numbers are already refreshed by a nightly cron, so they're at most a day stale. Only call `refresh_post_metrics` when the user explicitly needs up-to-the-minute numbers (e.g. a post that just went viral this morning), and cap it to the handful of posts that matter.
+Metrics refresh on their own every 6 hours, and there is no tool to force a refresh. A post published minutes ago shows its first numbers after the next refresh; say so rather than reporting zeros as a result.
 
 ## 3. Read the table, then interpret
 
