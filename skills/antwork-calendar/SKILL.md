@@ -35,7 +35,7 @@ Once approved, work slot by slot. For each row, before writing copy:
 
 Write each post to its single target account. There is no multi-platform field — **one `create_post` per account**. If the same idea should run on three accounts, that's three `create_post` calls; give them a shared `campaign_id` so they stay grouped.
 
-Respect the hard character limit for each platform (X 280, Threads 500, Pinterest 800, Instagram 2200, LinkedIn 3000, TikTok 4000, YouTube 5000, Facebook 63206). `schedule_post` refuses anything over the limit, so trim before you schedule.
+Respect the hard character limit for each platform (X 280, Threads 500, Pinterest 800, Instagram 2200, LinkedIn 3000, TikTok 2200, YouTube 5000, Facebook 63206). `schedule_post` refuses anything over the limit, so trim before you schedule.
 
 ## 4. Create, then schedule — the two-step
 

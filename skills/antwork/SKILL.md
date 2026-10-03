@@ -39,7 +39,7 @@ These hold across all skills — the specialized skills repeat the ones they dep
 - **One account per post.** `create_post` targets a **single** `account_id`; the platform is derived from that account. There is **no** `platforms` or `platform_texts` array. To hit several accounts, use `create_campaign` with one variant per account (each with its own copy), then `schedule_campaign` / `publish_campaign`.
 - **Draft → publish/schedule is two steps.** `create_post` creates a **draft**. Then `publish_post(post_id)` to go live now, or `schedule_post(post_id, scheduled_for)` (ISO 8601) for later. Saying "scheduled!" after only `create_post` is a lie.
 - **Pull context before drafting.** `get_post_context(platform, account_id)` returns brand identity and the account's recent posts, which are its voice. There is no stored voice profile. Call it before writing copy.
-- **Character limits are enforced.** X 280 · Threads 500 · Pinterest 800 · Instagram 2200 · LinkedIn 3000 · TikTok 4000 · YouTube 5000 · Facebook 63206. `schedule_post`/`publish_post` refuse to dispatch over-limit text.
+- **Character limits are enforced.** X 280 · Threads 500 · Pinterest 800 · Instagram 2200 · TikTok 2200 · LinkedIn 3000 · YouTube 5000 · Facebook 63206. `schedule_post`/`publish_post` refuse to dispatch over-limit text.
 - **Analytics is tabular.** `get_performance` and `get_engagement_history` (pass `post_id` for one post) return BigQuery-style `{schema, rows, rowCount}` — you render the charts/tables. Metrics refresh every 6 hours; there is no live-refresh tool.
 - **Confirm destructive ops.** `delete_post`, `disconnect_social_account`, and `delete_media` are destructive — confirm with the user first and report exactly what was removed.
 

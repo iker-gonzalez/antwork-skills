@@ -37,7 +37,7 @@ Per-platform hard limits, enforced by the server at schedule/publish time:
 |---|---|---|---|
 | X | 280 | Instagram | 2,200 |
 | Threads | 500 | LinkedIn | 3,000 |
-| Pinterest | 800 | TikTok | 4,000 |
+| Pinterest | 800 | TikTok | 2,200 |
 | YouTube | 5,000 | Facebook | 63,206 |
 
 Keep posts short by default; LinkedIn is the one place where longer (300–600 words) is fine. If copy is over limit, `schedule_post`/`publish_post` will refuse — trim before dispatching, don't let the call bounce.

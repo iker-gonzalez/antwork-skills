@@ -42,7 +42,7 @@ Generate one `campaign_id` for the whole push. For each post in the approved seq
 
 Set a meaningful per-post `goal` (e.g. "tease", "launch", "social-proof", "last-call") — it makes later performance analysis legible. Multi-platform on the same day = multiple `create_post` calls sharing the same `campaign_id`; there is no platforms array. Everything is still a DRAFT at this point.
 
-Respect hard char limits per platform (X 280, Threads 500, Pinterest 800, IG 2200, LinkedIn 3000, TikTok 4000, YouTube 5000, FB 63206) — scheduling rejects anything over.
+Respect hard char limits per platform (X 280, Threads 500, Pinterest 800, IG 2200, LinkedIn 3000, TikTok 2200, YouTube 5000, FB 63206) — scheduling rejects anything over.
 
 ## 5. Schedule across the window
 
