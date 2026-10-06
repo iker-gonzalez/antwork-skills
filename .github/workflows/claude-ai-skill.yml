@@ -1,0 +1,38 @@
+name: claude.ai skill package
+
+# Rebuilds the claude.ai ZIP whenever a packaged file changes on main and
+# replaces the asset on the `claude-ai-skill` release. That release is the
+# stable download URL antwork.io links to:
+#   https://github.com/iker-gonzalez/antwork-skills/releases/download/claude-ai-skill/antwork-claude-ai-skill.zip
+# The asset's download_count is the adoption number.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - skills/**
+      - agents/**
+      - templates/**
+      - claude-ai/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./claude-ai/build.sh
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view claude-ai-skill >/dev/null 2>&1; then
+            gh release upload claude-ai-skill dist/antwork-claude-ai-skill.zip --clobber
+          else
+            gh release create claude-ai-skill dist/antwork-claude-ai-skill.zip \
+              --title "Antwork skill for claude.ai" \
+              --notes "In claude.ai, open Settings, find Skills, and upload this ZIP. Rebuilt from main on every change to the skills." \
+              --latest=false
+          fi

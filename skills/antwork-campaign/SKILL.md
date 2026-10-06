@@ -34,21 +34,22 @@ Present the full sequence as a **numbered plan** and stop for explicit approval 
 
 Editing a 7-post plan is far cheaper than editing 7 drafts. Don't call `create_post` during planning.
 
-## 4. Create the sequence under one campaign_id
+## 4. Create the sequence as one campaign
 
-Generate one `campaign_id` for the whole push. For each post in the approved sequence:
+Let the server mint the `campaign_id`, then reuse it:
 
-- `create_post(text, account_id, hashtags?, goal="<per-post goal>", campaign_id="<shared-id>")`.
+- The first beat: `create_campaign(variants=[{account_id, text, goal: "<per-post goal>"}, ...])`, one variant per account that carries it. It returns the `campaign_id`.
+- Every later beat: `create_campaign(variants=[...], campaign_id="<that id>")` for a multi-account beat, or `create_post(text, account_id, goal=..., campaign_id="<that id>")` for a single account.
 
-Set a meaningful per-post `goal` (e.g. "tease", "launch", "social-proof", "last-call") — it makes later performance analysis legible. Multi-platform on the same day = multiple `create_post` calls sharing the same `campaign_id`; there is no platforms array. Everything is still a DRAFT at this point.
+Never invent a `campaign_id`, and never send identical text in every variant: each account gets copy written for it. Set a meaningful per-post `goal` (e.g. "tease", "launch", "social-proof", "last-call") — it makes later performance analysis legible. Everything is still a DRAFT at this point.
 
 Respect hard char limits per platform (X 280, Threads 500, Pinterest 800, IG 2200, LinkedIn 3000, TikTok 2200, YouTube 5000, FB 63206) — scheduling rejects anything over.
 
 ## 5. Schedule across the window
 
-Schedule each draft to its slot: `schedule_post(post_id, scheduled_for)` with ISO 8601 timestamps drawn from the optimal times, spread across the campaign days. A draft isn't on the calendar until `schedule_post` succeeds. If a call is blocked (over limit, or `needs_reconnect` with a `reauthUrl`), name the specific post and reason.
+Schedule each draft to its slot: `schedule_post(post_id, scheduled_for)` with ISO 8601 timestamps drawn from the optimal times, spread across the campaign days. For a beat that goes out on several accounts at the same moment, `schedule_campaign(scheduled_for, post_ids=[...])` does them in one call. Scheduling reaches at most 30 days ahead; a longer arc keeps its later beats as drafts until they come into range. A draft isn't on the calendar until `schedule_post` succeeds. If a call is blocked (over limit, or `needs_reconnect` with a `reauthUrl`), name the specific post and reason.
 
-For a hard launch moment you want live to the second, `publish_post(post_id)` at the moment instead of pre-scheduling — it returns live URLs; report them.
+For a hard launch moment you want live to the second, publish at the moment instead of pre-scheduling: `publish_post(post_id)` for one account, `publish_campaign(post_ids=[...])` for several. Both return live URLs; report them.
 
 ## 6. Track the campaign as it runs
 

@@ -67,18 +67,24 @@ mkdir -p "$AGENTS_DIR"
 echo -e "${BLUE}Installing skills...${NC}"
 SKILLS=(
     "antwork"
-    "antwork-setup"
     "antwork-voice"
-    "antwork-poster"
     "antwork-calendar"
     "antwork-repurpose"
     "antwork-campaign"
     "antwork-ideas"
     "antwork-analytics"
-    "antwork-engage"
-    "antwork-media"
     "antwork-audit"
 )
+
+# Retired in 1.2.0: the MCP server's own instructions cover single posts,
+# setup, media and engagement, so these only went stale. Remove copies an
+# older install left behind.
+for retired in antwork-setup antwork-poster antwork-engage antwork-media; do
+    if [ -d "$SKILLS_DIR/$retired" ]; then
+        rm -rf "${SKILLS_DIR:?}/$retired"
+        echo -e "  ${YELLOW}−${NC} $retired (retired, removed)"
+    fi
+done
 
 SKILL_COUNT=0
 for skill in "${SKILLS[@]}"; do

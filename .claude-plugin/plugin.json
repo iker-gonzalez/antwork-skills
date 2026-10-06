@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "antwork-skills",
   "displayName": "Antwork Skills",
-  "description": "Social-media command center for the Antwork MCP connector: a /antwork orchestrator routing to 11 skills (setup, voice, poster, calendar, repurpose, campaign, ideas, analytics, engage, media, audit), 5 parallel audit agents, and the Antwork MCP server pre-wired.",
-  "version": "1.1.0",
+  "description": "Multi-step social-media workflows for the Antwork MCP connector: a /antwork router over 7 skills (calendar, repurpose, campaign, ideas, voice, analytics, audit), 5 parallel audit agents, and the Antwork MCP server pre-wired.",
+  "version": "1.2.0",
   "author": {
     "name": "Iker Gonzalez",
     "url": "https://github.com/iker-gonzalez"
