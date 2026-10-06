@@ -1,8 +1,8 @@
 # Antwork: post to LinkedIn, X, Instagram and more from your AI
 
-**AI assistants have no built-in connector for posting to social media.** To let your assistant draft, schedule and publish posts, you connect it to an MCP server that holds the platform permissions. [Antwork](https://antwork.io) is that server: connect `https://api.antwork.io/mcp` once, sign in with OAuth, and your assistant can post to your connected accounts on **LinkedIn (personal profile or company page), X, Instagram, Facebook Pages, Threads, TikTok, YouTube and Pinterest**. Posts stay drafts until you ask it to schedule or publish them.
+**AI assistants have no built-in connector for posting to social media.** To let your assistant draft, schedule and publish posts, you connect it to an MCP server that holds the platform permissions. [Antwork](https://antwork.io?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills) is that server: connect `https://api.antwork.io/mcp` once, sign in with OAuth, and your assistant can post to your connected accounts on **LinkedIn (personal profile or company page), X, Instagram, Facebook Pages, Threads, TikTok, YouTube and Pinterest**. Posts stay drafts until you ask it to schedule or publish them.
 
-It works in VS Code (GitHub Copilot chat), Claude, ChatGPT, Cursor and any other client that speaks MCP. Two social accounts are free, then $5 a month each ([pricing](https://antwork.io/pricing)).
+It works in VS Code (GitHub Copilot chat), Claude, ChatGPT, Cursor and any other client that speaks MCP. Two social accounts are free, then $5 a month each ([pricing](https://antwork.io/pricing?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills)).
 
 ## Connect
 
@@ -17,7 +17,7 @@ The first tool call opens a consent screen in your browser. After that, ask your
 
 ### VS Code
 
-Install **Antwork** from the MCP servers gallery, or [add it in one click](https://antwork.io/automate/vscode). MCP servers in VS Code run through GitHub Copilot, so the Copilot extension must be installed and signed in. To add it by hand, put this in `.vscode/mcp.json`:
+Install **Antwork** from the MCP servers gallery, or [add it in one click](https://antwork.io/automate/vscode?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills). MCP servers in VS Code run through GitHub Copilot, so the Copilot extension must be installed and signed in. To add it by hand, put this in `.vscode/mcp.json`:
 
 ```json
 {
@@ -32,11 +32,11 @@ Install **Antwork** from the MCP servers gallery, or [add it in one click](https
 
 ### Other clients
 
-- **Claude.ai or Claude Desktop:** add `https://api.antwork.io/mcp` as a custom connector. [Step-by-step](https://antwork.io/automate/claude-desktop/linkedin). For the calendar, campaign, analytics and audit workflows, add the [claude.ai skill](#claudeai) too.
+- **Claude.ai or Claude Desktop:** add `https://api.antwork.io/mcp` as a custom connector. [Step-by-step](https://antwork.io/automate/claude-desktop/linkedin?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills). For the calendar, campaign, analytics and audit workflows, add the [claude.ai skill](#claudeai) too.
 - **Claude Code:** install the plugin below, which connects the server and adds the skills in one step.
-- **ChatGPT:** [setup guide](https://antwork.io/automate/chatgpt).
-- **Cursor:** [setup guide](https://antwork.io/automate/cursor).
-- **Anything else:** point it at the server URL above. [Full MCP docs](https://antwork.io/docs/mcp).
+- **ChatGPT:** [setup guide](https://antwork.io/automate/chatgpt?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills).
+- **Cursor:** [setup guide](https://antwork.io/automate/cursor?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills).
+- **Anything else:** point it at the server URL above. [Full MCP docs](https://antwork.io/docs/mcp?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills).
 
 ### What your assistant can do
 
@@ -46,7 +46,7 @@ Install **Antwork** from the MCP servers gallery, or [add it in one click](https
 - See the calendar, list and search posts, and retry a failed one.
 - Report engagement: impressions or views, likes, comments, shares and reach, per post and per account.
 
-Each platform's own rules apply: Instagram and Pinterest need an image or video, TikTok and YouTube need a video, and Instagram needs a Creator or Business account. [Tool reference](https://antwork.io/docs/mcp/tools).
+Each platform's own rules apply: Instagram and Pinterest need an image or video, TikTok and YouTube need a video, and Instagram needs a Creator or Business account. [Tool reference](https://antwork.io/docs/mcp/tools?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills).
 
 ## Antwork Skills for Claude Code and claude.ai
 
@@ -99,7 +99,7 @@ That's it — the [`antwork` MCP server](.mcp.json) connects automatically (comp
 
 #### Script install (no plugin)
 
-If you'd rather not use the plugin system, the script copies the skills + agents straight into `~/.claude/` (you still connect the [Antwork MCP](https://antwork.io) yourself):
+If you'd rather not use the plugin system, the script copies the skills + agents straight into `~/.claude/` (you still connect the [Antwork MCP](https://antwork.io?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills) yourself):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/iker-gonzalez/antwork-skills/main/install.sh | bash
@@ -152,7 +152,7 @@ antwork-skills/
 
 ## Contributing
 
-Each skill lives in `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`) followed by markdown instructions. Keep `description:` specific — it determines when Claude auto-loads the skill. Use only [real Antwork MCP tools](https://antwork.io) and never invent tool arguments; the server rejects unknown fields.
+Each skill lives in `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`) followed by markdown instructions. Keep `description:` specific — it determines when Claude auto-loads the skill. Use only [real Antwork MCP tools](https://antwork.io?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills) and never invent tool arguments; the server rejects unknown fields.
 
 ## License
 
