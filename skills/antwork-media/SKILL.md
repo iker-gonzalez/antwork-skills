@@ -35,7 +35,6 @@ If the media is already at a public **HTTPS** URL — an AI image you just gener
 ## Browsing and cleaning up
 
 - `list_media(media_type, limit, cursor)` — paginate the library; `media_type` is `image` / `video` / `document`; follow `nextCursor` for more.
-- `get_media(media_id)` — one item's URL, name, type, size, upload date.
 - `delete_media(media_id)` is **destructive** — confirm first. It removes the Firestore record; the underlying GCS file may persist, so don't promise it's wiped everywhere.
 
 ## Limits and types

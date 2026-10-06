@@ -57,7 +57,7 @@ For anything bigger than a one-off — a batch, a launch week, several platforms
 
 ## 7. Voice — avoid the AI tells
 
-Across every voice, avoid openers that read as AI: "Here's the thing:", "Let me break it down", "Buckle up", emoji-stuffed hooks. Pass `hashtags` as a list (no `#` prefix) and only when the account's voice profile uses them. Use `goal` to tag the post's intent when the user states one.
+Across every voice, avoid openers that read as AI: "Here's the thing:", "Let me break it down", "Buckle up", emoji-stuffed hooks. Pass `hashtags` as a list (no `#` prefix) and only when the account's recent posts use them. Use `goal` to tag the post's intent when the user states one.
 
 ## 8. Surface results, name failures
 

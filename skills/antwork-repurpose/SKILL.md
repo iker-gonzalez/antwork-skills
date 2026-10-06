@@ -33,7 +33,7 @@ Write a **native variant per platform**. Reusing one body across platforms is th
 - **Instagram (2200)** — caption that works under a visual; front-load the hook.
 - **Facebook / YouTube / Pinterest / TikTok** — match the platform's norm and limit.
 
-Honor every hard limit (X 280, Threads 500, Pinterest 800, IG 2200, LinkedIn 3000, TikTok 2200, YouTube 5000, FB 63206) — `schedule_post`/`publish_post` reject anything over. Match the voice profile's tone, emoji and hashtag policy, and CTA style per account. Avoid AI tells ("Here's the thing:", "Let me break it down", emoji-heavy openers).
+Honor every hard limit (X 280, Threads 500, Pinterest 800, IG 2200, LinkedIn 3000, TikTok 2200, YouTube 5000, FB 63206) — `schedule_post`/`publish_post` reject anything over. Match each account's recent posts for tone, emoji and hashtag use, and CTA style. Avoid AI tells ("Here's the thing:", "Let me break it down", emoji-heavy openers).
 
 Capture the brief in `templates/campaign-brief.md` if the user wants a record of the repurpose set.
 
