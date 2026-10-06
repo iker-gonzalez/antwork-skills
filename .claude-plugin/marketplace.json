@@ -10,9 +10,13 @@
     {
       "name": "antwork-skills",
       "source": ".",
-      "description": "Antwork social-media toolkit: orchestrator + 11 skills + 5 audit agents, with the Antwork MCP server pre-wired.",
+      "description": "Antwork social-media toolkit: router + 7 skills + 5 audit agents, with the Antwork MCP server pre-wired.",
       "category": "integration",
-      "keywords": ["antwork", "social-media", "mcp"]
+      "keywords": [
+        "antwork",
+        "social-media",
+        "mcp"
+      ]
     }
   ]
 }

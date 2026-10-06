@@ -5,7 +5,7 @@ description: Use when the user wants to turn ONE piece of source content into pl
 
 # Repurposing one piece into platform-native posts
 
-Antwork binds each post to a single account, and platform is derived from that account. Repurposing means writing a *distinct, native* version per platform — never one body copy-pasted everywhere — and grouping them under a shared `campaign_id`. This workflow codifies the mistakes assistants make when atomizing content.
+Antwork binds each post to a single account, and platform is derived from that account. Repurposing means writing a *distinct, native* version per platform — never one body copy-pasted everywhere — and grouping them as one campaign. This workflow codifies the mistakes assistants make when atomizing content.
 
 ## 1. Anchor the source
 
@@ -39,21 +39,22 @@ Capture the brief in `templates/campaign-brief.md` if the user wants a record of
 
 ## 4. Create as one grouped set
 
-Generate a single `campaign_id` for this repurpose batch and create one draft per platform with it:
+Create every variant in one call:
 
-- `create_post(text, account_id, hashtags?, goal?, campaign_id="<shared-id>")` for each variant.
+- `create_campaign(variants=[{account_id, text, hashtags?, goal?}, ...])`, one entry per target account, each with its own copy.
 
-The shared `campaign_id` keeps the variants grouped so they can be tracked, compared, and cleaned up together. `create_post` only makes DRAFTS — nothing is live yet.
+It returns the `campaign_id` and one post per account, so the set can be tracked, compared and cleaned up together. A variant that fails validation is reported with its reason and the others are still created. Shared media goes in `media_urls` on the same call. Everything is still a DRAFT; nothing is live yet.
 
 ## 5. Present, pick, ship
 
 Show the drafts side by side (platform → variant) and let the user edit or drop any before anything goes out. Then per the user's intent:
 
-- **Schedule**: `schedule_post(post_id, scheduled_for)` (ISO 8601) — stagger across the day/week using the preferred times from `get_workspace_settings` rather than firing all variants at once.
-- **Publish now**: `publish_post(post_id)` — it returns live URLs per platform; report them back, one line per account.
+- **Schedule, staggered**: `schedule_post(post_id, scheduled_for)` (ISO 8601) per variant, spread across the day/week using the preferred times from `get_workspace_settings` rather than firing all variants at once. At most 30 days ahead.
+- **Schedule, all at one time**: `schedule_campaign(scheduled_for, campaign_id)`.
+- **Publish now**: `publish_campaign(campaign_id)`. It publishes the whole set in one call and returns live URLs; report them back, one line per account. Don't call `publish_post` once per variant: each one waits on its platform in turn.
 
 Never claim a variant is "posted" after only `create_post`. Complete the second step.
 
 ## 6. Media carries over, but per platform
 
-If the source has an image or video, attach the right asset to each variant — `attach_media(post_id, media_urls)`, or `upload_media(image_url)` first for a public/AI-generated image. Don't assume one aspect ratio fits every platform; flag when a visual needs reformatting for, e.g., Instagram vs. LinkedIn.
+If the source has an image or video, attach the right asset to each variant — `attach_media(post_id, media_urls)` (it replaces the post's media, so pass the full set), or `upload_media(image_url)` first for a public/AI-generated image. One asset that suits every platform can go in `create_campaign`'s `media_urls` instead. Don't assume one aspect ratio fits every platform; flag when a visual needs reformatting for, e.g., Instagram vs. LinkedIn.

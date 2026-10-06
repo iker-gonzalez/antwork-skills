@@ -16,11 +16,13 @@ Before spawning anything, gather the lay of the land so the agents (and the repo
 - `list_social_accounts` — the connected platforms, handles, and token health. This is the audit's universe.
 - `get_workspace_settings` — timezone, preferred posting times, brand identity.
 
-If no accounts are connected, stop and route the user to `antwork-setup` instead — there's nothing to audit yet.
+If no accounts are connected, stop: there's nothing to audit yet. Call `get_connection_urls` so the user can connect one.
 
 ## 2. Spawn the five dimension agents in parallel
 
 Launch all five in a single batch so they run concurrently. Each is read-only and returns a structured findings block with a 0–100 sub-score and its top 3 fixes. Pass each the workspace and the account list you gathered.
+
+**No subagents where you are running** (claude.ai, or any host without a subagent tool)? Run the five dimensions yourself, one after another, following each agent's instructions file (`agents/<name>.md` in the plugin, `references/agents/<name>.md` in the claude.ai package) and returning its findings block before moving on. The analysis and the scoring are the same; only the parallelism is lost.
 
 | Dimension | Agent | Weight | Primary MCP tools |
 |---|---|---|---|
@@ -30,7 +32,7 @@ Launch all five in a single batch so they run concurrently. Each is read-only an
 | Content Quality | `antwork-content` | 20% | `fetch_platform_posts`, `get_post`, `list_posts` |
 | Platform Coverage & Growth | `antwork-growth` | 10% | `list_social_accounts`, `get_workspace_settings` |
 
-Do not analyze the dimensions inline yourself — the parallel agents are the point. If one agent fails or returns nothing, note the gap and score that dimension conservatively rather than blocking the report.
+Where subagents exist, don't analyze the dimensions inline: the parallel agents are the point. If one agent fails or returns nothing, note the gap and score that dimension conservatively rather than blocking the report.
 
 ## 3. Compute the composite Social Health Score
 
@@ -42,15 +44,15 @@ Score = Performance·0.30 + Voice·0.20 + Cadence·0.20 + Content·0.20 + Growth
 
 Band it: **80–100 Strong · 60–79 Healthy · 40–59 Needs work · 0–39 At risk.**
 
-## 4. Write ANTWORK-AUDIT.md
+## 4. Write the report
 
-Produce a client-ready Markdown file with:
+Produce a client-ready Markdown report, saved as `ANTWORK-AUDIT.md` where you can write files and in the reply otherwise, with:
 
 - **Header** — workspace name, audited accounts (platform + handle), date, and the composite score with its band.
 - **Executive summary** — 3–5 sentences: the single biggest strength, the single biggest leak, and the one move with the highest payoff.
 - **Scorecard table** — each dimension, its sub-score, and a one-line verdict.
 - **Per-dimension findings** — one section per agent, carrying through its findings and top-3 fixes verbatim-in-spirit (don't dilute the specifics).
-- **Prioritized action plan** — a single merged, impact-ranked checklist drawn from all five agents' fixes. Each item: what to do, which Antwork skill/tool does it (`antwork-voice` to refresh a stale profile, `antwork-calendar` to fill cadence gaps, etc.), and expected payoff.
+- **Prioritized action plan** — a single merged, impact-ranked checklist drawn from all five agents' fixes. Each item: what to do, which Antwork skill/tool does it (`antwork-voice` to redraft off-voice posts, `antwork-calendar` to fill cadence gaps, etc.), and expected payoff.
 
 ## 5. Close with the next move
 

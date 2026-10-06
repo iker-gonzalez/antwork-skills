@@ -32,7 +32,7 @@ Install **Antwork** from the MCP servers gallery, or [add it in one click](https
 
 ### Other clients
 
-- **Claude.ai or Claude Desktop:** add `https://api.antwork.io/mcp` as a custom connector. [Step-by-step](https://antwork.io/automate/claude-desktop/linkedin).
+- **Claude.ai or Claude Desktop:** add `https://api.antwork.io/mcp` as a custom connector. [Step-by-step](https://antwork.io/automate/claude-desktop/linkedin). For the calendar, campaign, analytics and audit workflows, add the [claude.ai skill](#claudeai) too.
 - **Claude Code:** install the plugin below, which connects the server and adds the skills in one step.
 - **ChatGPT:** [setup guide](https://antwork.io/automate/chatgpt).
 - **Cursor:** [setup guide](https://antwork.io/automate/cursor).
@@ -48,31 +48,27 @@ Install **Antwork** from the MCP servers gallery, or [add it in one click](https
 
 Each platform's own rules apply: Instagram and Pinterest need an image or video, TikTok and YouTube need a video, and Instagram needs a Creator or Business account. [Tool reference](https://antwork.io/docs/mcp/tools).
 
-## Antwork Skills for Claude Code
+## Antwork Skills for Claude Code and claude.ai
 
-This repo also adds [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) on top of the connector, turning Claude Code into a social-media command center for solo founders and small teams. One orchestrator routes `/antwork <command>` to specialized skills, each of which codifies the right sequence of Antwork's MCP tools so the workflow runs correctly the first time: voice-aware drafting, the draft→publish/schedule two-step, per-platform character limits, campaign grouping, analytics, and a full audit.
+This repo also adds [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) on top of the connector. The connector alone handles single steps: drafting, scheduling, publishing, media, connections. The skills cover the multi-step workflows: a content calendar planned around what's already scheduled, one piece repurposed across platforms, a campaign arc, ideas grounded in what performed, an analytics report, and a scored audit. One router sends `/antwork <command>` (or a plain request) to the right one.
 
 ### Commands
 
 | Command | Skill | What it does |
 |---|---|---|
-| `/antwork setup` | [`antwork-setup`](skills/antwork-setup/SKILL.md) | Connect accounts, set workspace timezone + posting times, brand identity. **Run first.** |
 | `/antwork voice [account]` | [`antwork-voice`](skills/antwork-voice/SKILL.md) | Read an account's voice from its real posts, or capture one from samples. |
-| `/antwork post <idea>` | [`antwork-poster`](skills/antwork-poster/SKILL.md) | Draft → schedule/publish a post (single account or multi-platform fan-out). |
 | `/antwork calendar <theme>` | [`antwork-calendar`](skills/antwork-calendar/SKILL.md) | Plan and batch-schedule a content calendar. |
 | `/antwork repurpose <source>` | [`antwork-repurpose`](skills/antwork-repurpose/SKILL.md) | One piece → platform-native variants, grouped as a campaign. |
 | `/antwork campaign <goal>` | [`antwork-campaign`](skills/antwork-campaign/SKILL.md) | Sequence a multi-post campaign / launch week. |
 | `/antwork ideas [topic]` | [`antwork-ideas`](skills/antwork-ideas/SKILL.md) | Data-driven hooks grounded in what already performed. |
 | `/antwork analytics [range]` | [`antwork-analytics`](skills/antwork-analytics/SKILL.md) | Pull performance + engagement and synthesize a report. |
-| `/antwork engage` | [`antwork-engage`](skills/antwork-engage/SKILL.md) | Comment/reply (LinkedIn), retry failed posts, community work. |
-| `/antwork media` | [`antwork-media`](skills/antwork-media/SKILL.md) | Upload, attach, and manage post media. |
 | `/antwork audit` | [`antwork-audit`](skills/antwork-audit/SKILL.md) | Full social-presence audit with 5 parallel agents + a 0-100 Social Health Score. |
 
-You don't have to type the command — describe the intent ("schedule a LinkedIn post for Tuesday", "how did last month do?") and the [orchestrator](skills/antwork/SKILL.md) routes to the right skill.
+You don't have to type the command — describe the intent ("plan next week", "how did last month do?") and the [router](skills/antwork/SKILL.md) picks the skill. A single post, connecting an account, media and LinkedIn comments need no skill: the connector's own instructions cover them.
 
 ### The audit's parallel agents
 
-`/antwork audit` spawns five read-only subagents concurrently, then synthesizes a weighted score:
+In Claude Code, `/antwork audit` spawns five read-only subagents concurrently, then synthesizes a weighted score. On claude.ai, which has no subagents, the same five dimensions run one after another:
 
 | Agent | Dimension | Weight |
 |---|---|---|
@@ -86,7 +82,7 @@ You don't have to type the command — describe the intent ("schedule a LinkedIn
 
 The skills call the Antwork MCP server, so it has to be connected (see [Connect](#connect)). The plugin does that for you. A single OAuth token spans all your workspaces.
 
-Once connected, the highest-value path for a new user is: **setup → voice → ideas/calendar → post → analytics → audit**.
+Once connected, a good first run is **audit** (where you stand), then **ideas** or **calendar** (what to post next).
 
 ### Install the skills
 
@@ -99,7 +95,7 @@ This repo is also a Claude Code **plugin marketplace**. Installing the plugin wi
 /plugin install antwork-skills@antwork
 ```
 
-That's it — the [`antwork` MCP server](.mcp.json) connects automatically (complete the OAuth prompt), and the orchestrator, 11 skills, and 5 audit agents load. Why the plugin over loose skills: the skills are useless until Antwork's MCP is connected, and the plugin ships that config bundled, so there's no separate connector setup.
+That's it — the [`antwork` MCP server](.mcp.json) connects automatically (complete the OAuth prompt), and the router, 7 skills, and 5 audit agents load. Why the plugin over loose skills: the skills are useless until Antwork's MCP is connected, and the plugin ships that config bundled, so there's no separate connector setup.
 
 #### Script install (no plugin)
 
@@ -120,11 +116,17 @@ clawhub install iker-gonzalez/antwork
 mcporter config add antwork --url https://api.antwork.io/mcp --auth oauth
 ```
 
-It is deliberately not the orchestrator above. ClawHub publishes one folder, so a skill that routes to 11 siblings that were never installed would be broken — this one inlines the setup, the drafting protocol, the character limits and the draft→publish two-step in a single file.
+It is deliberately not the router above. ClawHub publishes one folder, so a skill that routes to 7 siblings that were never installed would be broken — this one inlines the setup, the drafting protocol, the character limits and the draft→publish two-step in a single file.
 
-#### Claude.ai
+#### claude.ai
 
-Plugins are Claude Code only. On claude.ai the connector works on its own: the server sends its drafting rules to the model when it connects, so no skills are needed to post correctly.
+Plugins are Claude Code only, so claude.ai gets the same skills as one upload:
+
+1. Download [`antwork-claude-ai-skill.zip`](https://github.com/iker-gonzalez/antwork-skills/releases/download/claude-ai-skill/antwork-claude-ai-skill.zip).
+2. In claude.ai, open Settings, find Skills, and upload the ZIP.
+3. Connect the Antwork connector (see [Connect](#connect)) if you haven't.
+
+It is one skill named `antwork`: the router, with every other skill and audit dimension inside it as a reference file it reads when needed. [`claude-ai/build.sh`](claude-ai/build.sh) generates it from `skills/`, `agents/` and `templates/`, and a workflow republishes it on every change, so it never drifts from the plugin. Posting itself needs no skill on claude.ai either: the connector sends its drafting rules when it connects.
 
 ## Repository layout
 
@@ -134,16 +136,15 @@ antwork-skills/
 │   ├── plugin.json           # plugin manifest
 │   └── marketplace.json      # self-hosted marketplace (lists this plugin)
 ├── .mcp.json                 # Antwork MCP server — bundled & auto-connected
-├── skills/                   # orchestrator + 11 specialized skills
-│   ├── antwork/              # orchestrator — routes /antwork <command>
-│   ├── antwork-setup/        ├── antwork-campaign/
-│   ├── antwork-voice/        ├── antwork-ideas/
-│   ├── antwork-poster/       ├── antwork-analytics/
-│   ├── antwork-calendar/     ├── antwork-engage/
-│   ├── antwork-repurpose/    ├── antwork-media/
+├── skills/                   # router + 7 specialized skills
+│   ├── antwork/              # router — /antwork <command>
+│   ├── antwork-calendar/     ├── antwork-campaign/
+│   ├── antwork-repurpose/    ├── antwork-ideas/
+│   ├── antwork-voice/        ├── antwork-analytics/
 │   └── antwork-audit/
 ├── agents/                   # 5 parallel audit subagents (auto-discovered)
 ├── templates/                # voice read, calendar, campaign brief, launch week, report
+├── claude-ai/build.sh        # builds the claude.ai ZIP from skills/, agents/, templates/
 ├── clawhub/                  # self-contained skill published to ClawHub
 ├── install.sh / uninstall.sh # script-install fallback
 └── README.md / LICENSE

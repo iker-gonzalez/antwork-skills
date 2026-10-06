@@ -1,48 +1,48 @@
 ---
 name: antwork
-description: Main orchestrator for the Antwork social-media toolkit. Use when the user wants to run any Antwork workflow through its MCP connector — drafting, scheduling, publishing, content calendars, repurposing, campaigns, voice profiles, analytics, ideation, engagement, media, account setup, or a full social-presence audit. Routes "/antwork <command>" to the right specialized skill. Trigger on "/antwork", "use Antwork to…", or any request to manage social posting through Antwork.
+description: Router for the Antwork social-media toolkit. Use when the user wants a multi-step Antwork workflow through its MCP connector — a content calendar, repurposing one piece across platforms, a campaign or launch week, data-driven post ideas, reading an account's voice, an analytics report, or a full social-presence audit. Routes "/antwork <command>" to the right skill. Trigger on "/antwork", "use Antwork to…", or any request to plan, analyze or audit social posting through Antwork.
 ---
 
 # Antwork — social-media command center
 
-Antwork is an MCP-native social-media scheduler for solo founders and small teams. This skill is the **router**: it maps a user request (or an explicit `/antwork <command>`) to the specialized skill that does the work. Each specialized skill codifies the gotchas of the Antwork MCP server so the workflow runs correctly the first time.
+Antwork is an MCP-native social-media scheduler. Its MCP server already tells you how to do the single steps: draft a post, schedule or publish it, attach media, connect an account, comment on LinkedIn, retry a failed post. Those need no skill — follow the server's instructions and each tool's description.
+
+These skills cover the **multi-step workflows** the server can't spell out on its own: plans that need approval before any draft, batches that must avoid the existing calendar, reports that turn rows into decisions. This skill is the router.
 
 ## Commands
 
 | Command | Skill | What it does |
 |---|---|---|
-| `/antwork setup` | `antwork-setup` | Connect accounts, set workspace timezone + posting times, brand identity. Run this first. |
-| `/antwork voice [account]` | `antwork-voice` | Read an account's voice from its real posts, or capture one from samples for an account with no history. |
-| `/antwork post <idea>` | `antwork-poster` | Draft → schedule/publish a single post (one account, or fan out via a shared campaign). |
 | `/antwork calendar <theme>` | `antwork-calendar` | Plan and batch-schedule a content calendar across the week/month. |
 | `/antwork repurpose <source>` | `antwork-repurpose` | Turn one piece (blog, transcript, long post) into platform-native variants. |
 | `/antwork campaign <goal>` | `antwork-campaign` | Sequence a multi-post campaign / launch week toward a goal. |
 | `/antwork ideas [topic]` | `antwork-ideas` | Generate data-driven hooks grounded in what already performed. |
+| `/antwork voice [account]` | `antwork-voice` | Read an account's voice from its real posts, or capture one from samples for an account with no history. |
 | `/antwork analytics [range]` | `antwork-analytics` | Pull performance + engagement and synthesize a report. |
-| `/antwork engage` | `antwork-engage` | Comment/reply (LinkedIn), retry failed posts, community work. |
-| `/antwork media` | `antwork-media` | Upload, attach, and manage post media. |
-| `/antwork audit` | `antwork-audit` | Full social-presence audit with 5 parallel agents + a 0-100 Social Health Score. |
+| `/antwork audit` | `antwork-audit` | Full social-presence audit across 5 dimensions + a 0-100 Social Health Score. |
 
-If the user just describes intent in natural language ("schedule a LinkedIn post for Tuesday", "how did last month do?"), route to the matching skill — they don't have to type the command.
+Where these skills aren't installed one by one (the claude.ai package), each one's instructions are in `references/<skill-name>.md` next to this file: read that file and follow it as the skill.
+
+If the user just describes intent ("plan next week", "how did last month do?"), route to the matching skill — they don't have to type the command.
+
+## Handled directly, without a skill
+
+- **One post** ("post this to LinkedIn", "schedule a tweet for Tuesday"): `get_post_context` for the account, then `create_post`, then `schedule_post` or `publish_post`. One idea on several accounts: `create_campaign`, then `schedule_campaign` or `publish_campaign`.
+- **Setup and connections** ("connect my X", "my account is disconnected"): `get_connection_urls`. Timezone, posting times and brand identity: `update_workspace`.
+- **Media**: start with `get_post` (or `create_post` for a new draft) and follow the route its response names for this host.
+- **Engagement**: `comment_post` (LinkedIn only), `retry_failed_post` once the failure's cause is fixed, `fetch_platform_posts` for what is live.
 
 ## Routing logic
 
-1. **Resolve the verb.** Map the request to one command above. When ambiguous, prefer the narrowest skill (a single post → `antwork-poster`, not `antwork-campaign`).
-2. **Check prerequisites once.** Most workflows need a workspace and a connected account. If `list_social_accounts` shows nothing connected, route to `antwork-setup` first. If `get_post_context` returns no recent posts for an account, suggest `antwork-voice` before drafting at volume.
-3. **Hand off — don't reimplement.** Each specialized skill owns its tool sequence. This orchestrator only picks the lane and passes along the user's intent and any context already gathered (which workspace, which account).
+1. **Resolve the verb.** Map the request to one command above, or to a direct step. When ambiguous, prefer the narrowest: a single post is a direct step, not `antwork-campaign`.
+2. **Check prerequisites once.** Every workflow needs a workspace and a connected account. The `workspaceAccounts` field on any workspace-scoped result lists the accounts; if none are connected, call `get_connection_urls` first.
+3. **Hand off — don't reimplement.** Each skill owns its tool sequence. Pass along the user's intent and what you already know (workspace, accounts).
 
-## Ground truth every Antwork workflow must respect
+## Ground truth every workflow must respect
 
-These hold across all skills — the specialized skills repeat the ones they depend on, but keep them in mind when routing:
-
-- **Workspace resolution.** `workspace_id` is optional on every tool — it auto-resolves when the user has exactly one workspace. With multiple and no default, call `set_default_workspace` first (or pass `workspace_id` explicitly).
-- **One account per post.** `create_post` targets a **single** `account_id`; the platform is derived from that account. There is **no** `platforms` or `platform_texts` array. To hit several accounts, use `create_campaign` with one variant per account (each with its own copy), then `schedule_campaign` / `publish_campaign`.
-- **Draft → publish/schedule is two steps.** `create_post` creates a **draft**. Then `publish_post(post_id)` to go live now, or `schedule_post(post_id, scheduled_for)` (ISO 8601) for later. Saying "scheduled!" after only `create_post` is a lie.
-- **Pull context before drafting.** `get_post_context(platform, account_id)` returns brand identity and the account's recent posts, which are its voice. There is no stored voice profile. Call it before writing copy.
-- **Character limits are enforced.** X 280 · Threads 500 · Pinterest 800 · Instagram 2200 · TikTok 2200 · LinkedIn 3000 · YouTube 5000 · Facebook 63206. `schedule_post`/`publish_post` refuse to dispatch over-limit text.
-- **Analytics is tabular.** `get_performance` and `get_engagement_history` (pass `post_id` for one post) return BigQuery-style `{schema, rows, rowCount}` — you render the charts/tables. Metrics refresh every 6 hours; there is no live-refresh tool.
-- **Confirm destructive ops.** `delete_post`, `disconnect_social_account`, and `delete_media` are destructive — confirm with the user first and report exactly what was removed.
-
-## Suggested first-run path
-
-For a new user, the highest-value order is: `setup` → `voice` → `ideas`/`calendar` → `post` → (later) `analytics` → `audit`. If someone jumps straight to `post` with nothing connected, route them through `setup` first, then come back.
+- **Draft → publish/schedule is two steps.** `create_post` and `create_campaign` create **drafts**. Nothing is scheduled until `schedule_post` / `schedule_campaign` succeeds, and nothing is live until `publish_post` / `publish_campaign` does.
+- **One account per post, its own copy per account.** Several accounts means `create_campaign` with one variant per account, each written for that account. Never one body across many accounts.
+- **Voice comes from the account's own posts.** `get_post_context` returns them; there is no stored voice profile. Call it before writing copy for any account.
+- **Hard limits.** Character limits are per platform (X 280 · Threads 500 · Pinterest 800 · Instagram 2,200 · TikTok 2,200 · LinkedIn 3,000 · YouTube 5,000 · Facebook 63,206). TikTok and YouTube need a video; Instagram and Pinterest need an image or video. Scheduling reaches at most 30 days ahead.
+- **Plan before batches.** Anything bigger than one post gets a numbered plan the user approves before the first draft.
+- **Confirm destructive ops.** `delete_post`, `disconnect_social_account` and `delete_media` need the user's go-ahead first.

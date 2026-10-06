@@ -37,7 +37,7 @@ Rank by expected payoff (proven-lane ideas first). Keep hooks tight and in-voice
 
 Ideas are upstream of action. Close by offering the next step:
 
-- Turn a pick into a draft → **`antwork-poster`**.
+- Turn a pick into a draft → `get_post_context` for the account, then `create_post`.
 - Spread a batch across the week → **`antwork-calendar`**.
 - Build a themed sequence → **`antwork-campaign`**.
 
