@@ -1,10 +1,58 @@
-# Antwork Skills
+# Antwork: post to LinkedIn, X, Instagram and more from your AI
 
-A toolkit of [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) that turn Claude into a social-media command center on top of the [Antwork](https://antwork.io) MCP connector — an MCP-native social scheduler for solo founders and small teams.
+**AI assistants have no built-in connector for posting to social media.** To let your assistant draft, schedule and publish posts, you connect it to an MCP server that holds the platform permissions. [Antwork](https://antwork.io) is that server: connect `https://api.antwork.io/mcp` once, sign in with OAuth, and your assistant can post to your connected accounts on **LinkedIn (personal profile or company page), X, Instagram, Facebook Pages, Threads, TikTok, YouTube and Pinterest**. Posts stay drafts until you ask it to schedule or publish them.
 
-One orchestrator routes `/antwork <command>` to specialized skills, each of which codifies the right sequence of Antwork's 43 MCP tools so the workflow runs correctly the first time — voice-aware drafting, the draft→publish/schedule two-step, per-platform character limits, campaign grouping, analytics, and a full audit.
+It works in VS Code (GitHub Copilot chat), Claude, ChatGPT, Cursor and any other client that speaks MCP. Two social accounts are free, then $5 a month each ([pricing](https://antwork.io/pricing)).
 
-## Commands
+## Connect
+
+| | |
+|---|---|
+| Server URL | `https://api.antwork.io/mcp` |
+| Server name | `antwork` |
+| Transport | Streamable HTTP |
+| Auth | OAuth 2.1 with dynamic client registration. No API key to create or store. |
+
+The first tool call opens a consent screen in your browser. After that, ask your assistant to connect a social account and it returns a connect link for each platform.
+
+### VS Code
+
+Install **Antwork** from the MCP servers gallery, or [add it in one click](https://antwork.io/automate/vscode). MCP servers in VS Code run through GitHub Copilot, so the Copilot extension must be installed and signed in. To add it by hand, put this in `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "antwork": {
+      "type": "http",
+      "url": "https://api.antwork.io/mcp"
+    }
+  }
+}
+```
+
+### Other clients
+
+- **Claude.ai or Claude Desktop:** add `https://api.antwork.io/mcp` as a custom connector. [Step-by-step](https://antwork.io/automate/claude-desktop/linkedin).
+- **Claude Code:** install the plugin below, which connects the server and adds the skills in one step.
+- **ChatGPT:** [setup guide](https://antwork.io/automate/chatgpt).
+- **Cursor:** [setup guide](https://antwork.io/automate/cursor).
+- **Anything else:** point it at the server URL above. [Full MCP docs](https://antwork.io/docs/mcp).
+
+### What your assistant can do
+
+- Draft a post in each account's own voice. It reads that account's recent posts first.
+- Schedule or publish, per account or as a campaign across several accounts.
+- Attach images, video and PDFs, and manage the media library.
+- See the calendar, list and search posts, and retry a failed one.
+- Report engagement: impressions or views, likes, comments, shares and reach, per post and per account.
+
+Each platform's own rules apply: Instagram and Pinterest need an image or video, TikTok and YouTube need a video, and Instagram needs a Creator or Business account. [Tool reference](https://antwork.io/docs/mcp/tools).
+
+## Antwork Skills for Claude Code
+
+This repo also adds [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) on top of the connector, turning Claude Code into a social-media command center for solo founders and small teams. One orchestrator routes `/antwork <command>` to specialized skills, each of which codifies the right sequence of Antwork's MCP tools so the workflow runs correctly the first time: voice-aware drafting, the draft→publish/schedule two-step, per-platform character limits, campaign grouping, analytics, and a full audit.
+
+### Commands
 
 | Command | Skill | What it does |
 |---|---|---|
@@ -22,7 +70,7 @@ One orchestrator routes `/antwork <command>` to specialized skills, each of whic
 
 You don't have to type the command — describe the intent ("schedule a LinkedIn post for Tuesday", "how did last month do?") and the [orchestrator](skills/antwork/SKILL.md) routes to the right skill.
 
-## The audit's parallel agents
+### The audit's parallel agents
 
 `/antwork audit` spawns five read-only subagents concurrently, then synthesizes a weighted score:
 
@@ -34,15 +82,15 @@ You don't have to type the command — describe the intent ("schedule a LinkedIn
 | [`antwork-content`](agents/antwork-content.md) | Content quality (hooks, CTAs, fit) | 20% |
 | [`antwork-growth`](agents/antwork-growth.md) | Platform coverage & growth | 10% |
 
-## Prerequisite — connect Antwork
+### Prerequisite
 
-These skills call the Antwork MCP server, so you need it connected to Claude first. See [antwork.io](https://antwork.io). A single OAuth token spans all your workspaces.
+The skills call the Antwork MCP server, so it has to be connected (see [Connect](#connect)). The plugin does that for you. A single OAuth token spans all your workspaces.
 
 Once connected, the highest-value path for a new user is: **setup → voice → ideas/calendar → post → analytics → audit**.
 
-## Install
+### Install the skills
 
-### Claude Code plugin (recommended)
+#### Claude Code plugin (recommended)
 
 This repo is also a Claude Code **plugin marketplace**. Installing the plugin wires up the Antwork MCP server *and* all skills + agents in one step:
 
@@ -53,7 +101,7 @@ This repo is also a Claude Code **plugin marketplace**. Installing the plugin wi
 
 That's it — the [`antwork` MCP server](.mcp.json) connects automatically (complete the OAuth prompt), and the orchestrator, 11 skills, and 5 audit agents load. Why the plugin over loose skills: the skills are useless until Antwork's MCP is connected, and the plugin ships that config bundled, so there's no separate connector setup.
 
-### Script install (no plugin)
+#### Script install (no plugin)
 
 If you'd rather not use the plugin system, the script copies the skills + agents straight into `~/.claude/` (you still connect the [Antwork MCP](https://antwork.io) yourself):
 
@@ -63,7 +111,7 @@ curl -fsSL https://raw.githubusercontent.com/iker-gonzalez/antwork-skills/main/i
 
 Prefer to clone first? `git clone … && cd antwork-skills && ./install.sh`. Remove everything with `./uninstall.sh`.
 
-### OpenClaw / ClawHub
+#### OpenClaw / ClawHub
 
 `clawhub/antwork/` is a **self-contained** skill published to [ClawHub](https://clawhub.ai), OpenClaw's skill registry:
 
@@ -74,9 +122,9 @@ mcporter config add antwork --url https://api.antwork.io/mcp --auth oauth
 
 It is deliberately not the orchestrator above. ClawHub publishes one folder, so a skill that routes to 11 siblings that were never installed would be broken — this one inlines the setup, the drafting protocol, the character limits and the draft→publish two-step in a single file.
 
-### Claude.ai
+#### Claude.ai
 
-Skills submitted to the [Anthropic Skills Directory](https://docs.claude.com/en/docs/agents-and-tools/agent-skills) surface automatically when you mention something they cover — no install step. (Plugins are Claude-Code-only; the skills are the cross-surface format.)
+Plugins are Claude Code only. On claude.ai the connector works on its own: the server sends its drafting rules to the model when it connects, so no skills are needed to post correctly.
 
 ## Repository layout
 
