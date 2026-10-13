@@ -11,6 +11,11 @@
   "homepage": "https://antwork.io",
   "repository": "https://github.com/iker-gonzalez/antwork-skills",
   "license": "MIT",
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://antwork.io/docs/skills",
+  "supportUrl": "https://antwork.io/contact",
+  "privacyPolicyUrl": "https://antwork.io/privacy",
+  "termsOfServiceUrl": "https://antwork.io/terms",
   "keywords": [
     "antwork",
     "social-media",
