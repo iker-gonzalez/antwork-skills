@@ -22,7 +22,7 @@ If no accounts are connected, stop: there's nothing to audit yet. Call `get_conn
 
 Launch all five in a single batch so they run concurrently. Each is read-only and returns a structured findings block with a 0–100 sub-score and its top 3 fixes. Pass each the workspace and the account list you gathered.
 
-**No subagents where you are running** (claude.ai, or any host without a subagent tool)? Run the five dimensions yourself, one after another, following each agent's instructions file (`agents/<name>.md` in the plugin, `references/agents/<name>.md` in the claude.ai package) and returning its findings block before moving on. The analysis and the scoring are the same; only the parallelism is lost.
+**No subagents where you are running** (claude.ai, or any host without a subagent tool)? Run the five dimensions yourself, one after another, following each agent's instructions file (`agents/<name>.md` in this skill's folder, `references/agents/<name>.md` in the claude.ai package) and returning its findings block before moving on. The analysis and the scoring are the same; only the parallelism is lost.
 
 | Dimension | Agent | Weight | Primary MCP tools |
 |---|---|---|---|

@@ -4,6 +4,34 @@
 
 It works in VS Code (GitHub Copilot chat), Claude, ChatGPT, Cursor and any other client that speaks MCP. Two social accounts are free, then $5 a month each ([pricing](https://antwork.io/pricing?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills)).
 
+## Install in one line
+
+Pick your agent. Each line adds the Antwork skills (including [`/antwork ship`](skills/antwork-ship/SKILL.md), which turns your commits and releases into posts); the plugin lines also connect the MCP server.
+
+| Agent | Command |
+|---|---|
+| **Claude Code** (plugin: skills, audit agents and MCP server) | `/plugin marketplace add iker-gonzalez/antwork-skills` then `/plugin install antwork-skills@antwork` |
+| **Codex** (plugin: skills and MCP server) | `codex plugin marketplace add iker-gonzalez/antwork-skills && codex plugin add antwork-skills@antwork && codex mcp login antwork` |
+| **Any agent, skills only** ([skills CLI](https://skills.sh): Claude Code, Codex, Cursor and others) | `npx skills add iker-gonzalez/antwork-skills` |
+
+The skills CLI installs skills, not MCP servers, so connect the server once yourself:
+
+```sh
+# Claude Code
+claude mcp add --transport http antwork https://api.antwork.io/mcp
+# Codex
+codex mcp add antwork --url https://api.antwork.io/mcp && codex mcp login antwork
+```
+
+Or in Codex's `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.antwork]
+url = "https://api.antwork.io/mcp"
+```
+
+Then, from inside a repo: `/antwork ship` (or just "post about what I shipped this week").
+
 ## Connect
 
 | | |
@@ -63,6 +91,7 @@ This repo also adds [Agent Skills](https://docs.claude.com/en/docs/agents-and-to
 | `/antwork ideas [topic]` | [`antwork-ideas`](skills/antwork-ideas/SKILL.md) | Data-driven hooks grounded in what already performed. |
 | `/antwork analytics [range]` | [`antwork-analytics`](skills/antwork-analytics/SKILL.md) | Pull performance + engagement and synthesize a report. |
 | `/antwork audit` | [`antwork-audit`](skills/antwork-audit/SKILL.md) | Full social-presence audit with 5 parallel agents + a 0-100 Social Health Score. |
+| `/antwork ship [--since …] [--release <tag>]` | [`antwork-ship`](skills/antwork-ship/SKILL.md) | Turn the current repo's commits, merged PRs or a release into build-in-public posts, per account, in each account's voice. |
 
 You don't have to type the command — describe the intent ("plan next week", "how did last month do?") and the [router](skills/antwork/SKILL.md) picks the skill. A single post, connecting an account, media and LinkedIn comments need no skill: the connector's own instructions cover them.
 
@@ -72,11 +101,11 @@ In Claude Code, `/antwork audit` spawns five read-only subagents concurrently, t
 
 | Agent | Dimension | Weight |
 |---|---|---|
-| [`antwork-performance`](agents/antwork-performance.md) | Engagement & top/bottom posts | 30% |
-| [`antwork-voice-analyst`](agents/antwork-voice-analyst.md) | Voice consistency across accounts | 20% |
-| [`antwork-cadence`](agents/antwork-cadence.md) | Posting cadence & timing | 20% |
-| [`antwork-content`](agents/antwork-content.md) | Content quality (hooks, CTAs, fit) | 20% |
-| [`antwork-growth`](agents/antwork-growth.md) | Platform coverage & growth | 10% |
+| [`antwork-performance`](skills/antwork-audit/agents/antwork-performance.md) | Engagement & top/bottom posts | 30% |
+| [`antwork-voice-analyst`](skills/antwork-audit/agents/antwork-voice-analyst.md) | Voice consistency across accounts | 20% |
+| [`antwork-cadence`](skills/antwork-audit/agents/antwork-cadence.md) | Posting cadence & timing | 20% |
+| [`antwork-content`](skills/antwork-audit/agents/antwork-content.md) | Content quality (hooks, CTAs, fit) | 20% |
+| [`antwork-growth`](skills/antwork-audit/agents/antwork-growth.md) | Platform coverage & growth | 10% |
 
 ### Prerequisite
 
@@ -95,7 +124,7 @@ This repo is also a Claude Code **plugin marketplace**. Installing the plugin wi
 /plugin install antwork-skills@antwork
 ```
 
-That's it — the [`antwork` MCP server](.mcp.json) connects automatically (complete the OAuth prompt), and the router, 7 skills, and 5 audit agents load. Why the plugin over loose skills: the skills are useless until Antwork's MCP is connected, and the plugin ships that config bundled, so there's no separate connector setup.
+That's it — the [`antwork` MCP server](.mcp.json) connects automatically (complete the OAuth prompt), and the router, 8 skills, and 5 audit agents load. Why the plugin over loose skills: the skills are useless until Antwork's MCP is connected, and the plugin ships that config bundled, so there's no separate connector setup.
 
 #### Script install (no plugin)
 
@@ -116,7 +145,7 @@ clawhub install iker-gonzalez/antwork
 mcporter config add antwork --url https://api.antwork.io/mcp --auth oauth
 ```
 
-It is deliberately not the router above. ClawHub publishes one folder, so a skill that routes to 7 siblings that were never installed would be broken — this one inlines the setup, the drafting protocol, the character limits and the draft→publish two-step in a single file.
+It is deliberately not the router above. ClawHub publishes one folder, so a skill that routes to 8 siblings that were never installed would be broken — this one inlines the setup, the drafting protocol, the character limits and the draft→publish two-step in a single file.
 
 #### claude.ai
 
@@ -126,7 +155,7 @@ Plugins are Claude Code only, so claude.ai gets the same skills as one upload:
 2. In claude.ai, open Settings, find Skills, and upload the ZIP.
 3. Connect the Antwork connector (see [Connect](#connect)) if you haven't.
 
-It is one skill named `antwork`: the router, with every other skill and audit dimension inside it as a reference file it reads when needed. [`claude-ai/build.sh`](claude-ai/build.sh) generates it from `skills/`, `agents/` and `templates/`, and a workflow republishes it on every change, so it never drifts from the plugin. Posting itself needs no skill on claude.ai either: the connector sends its drafting rules when it connects.
+It is one skill named `antwork`: the router, with every other skill and audit dimension inside it as a reference file it reads when needed. [`claude-ai/build.sh`](claude-ai/build.sh) generates it from `skills/` (each skill with its templates, and the audit's agents), and a workflow republishes it on every change, so it never drifts from the plugin. Posting itself needs no skill on claude.ai either: the connector sends its drafting rules when it connects.
 
 ## Repository layout
 
@@ -136,15 +165,14 @@ antwork-skills/
 │   ├── plugin.json           # plugin manifest
 │   └── marketplace.json      # self-hosted marketplace (lists this plugin)
 ├── .mcp.json                 # Antwork MCP server — bundled & auto-connected
-├── skills/                   # router + 7 specialized skills
+├── skills/                   # router + 8 specialized skills, each with its own templates/
 │   ├── antwork/              # router — /antwork <command>
+│   ├── antwork-ship/         # commits / PRs / releases → posts
 │   ├── antwork-calendar/     ├── antwork-campaign/
 │   ├── antwork-repurpose/    ├── antwork-ideas/
 │   ├── antwork-voice/        ├── antwork-analytics/
-│   └── antwork-audit/
-├── agents/                   # 5 parallel audit subagents (auto-discovered)
-├── templates/                # voice read, calendar, campaign brief, launch week, report
-├── claude-ai/build.sh        # builds the claude.ai ZIP from skills/, agents/, templates/
+│   └── antwork-audit/        # + agents/: the 5 parallel audit subagents
+├── claude-ai/build.sh        # builds the claude.ai ZIP from skills/
 ├── clawhub/                  # self-contained skill published to ClawHub
 ├── install.sh / uninstall.sh # script-install fallback
 └── README.md / LICENSE
