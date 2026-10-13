@@ -3,7 +3,7 @@
 #
 # claude.ai installs skills one upload at a time and has no plugins, so the
 # router becomes the skill and every other skill rides along as a reference
-# file it reads on demand. Generated from skills/, agents/ and templates/ on
+# file it reads on demand. Generated from skills/ (each skill's SKILL.md, templates/ and the audit's agents/) on
 # every build, so the package cannot drift from the Claude Code plugin.
 #
 #   claude-ai/build.sh            -> dist/antwork-claude-ai-skill.zip
@@ -38,10 +38,10 @@ for dir in "$ROOT"/skills/antwork-*/; do
   name="$(basename "$dir")"
   strip_frontmatter "$dir/SKILL.md" > "$SKILL/references/$name.md"
 done
-for agent in "$ROOT"/agents/*.md; do
+for agent in "$ROOT"/skills/antwork-audit/agents/*.md; do
   strip_frontmatter "$agent" > "$SKILL/references/agents/$(basename "$agent")"
 done
-cp "$ROOT"/templates/*.md "$SKILL/templates/"
+cp "$ROOT"/skills/*/templates/*.md "$SKILL/templates/"
 
 # Every reference the router's table names must have shipped.
 for name in $(grep -o '`antwork-[a-z]*`' "$ROOT/skills/antwork/SKILL.md" | tr -d '`' | sort -u); do

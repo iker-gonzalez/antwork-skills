@@ -10,12 +10,16 @@ suite — correctness means the instructions are accurate about Antwork's MCP to
 ## Layout
 
 - `skills/<name>/SKILL.md` — one directory per skill; `SKILL.md` is the skill.
-- `agents/*.md` — the 5 read-only audit subagents used by `/antwork audit`.
-- `templates/*.md` — output templates skills render into.
+- `skills/<name>/templates/*.md` — output templates, inside the skill that renders them (since 1.3.0,
+  so the skills CLI, which installs one skill folder at a time, carries them). `campaign-brief.md` lives
+  in `antwork-campaign` and `antwork-repurpose` points at it there.
+- `skills/antwork-audit/agents/*.md` — the 5 read-only audit subagents used by `/antwork audit`. The
+  plugin lists them in `.claude-plugin/plugin.json` `agents`, which replaces the default `agents/` scan;
+  add or rename an agent there too.
 - `install.sh` / `uninstall.sh` — non-plugin install path.
 - `claude-ai/build.sh` — builds the claude.ai ZIP (one `antwork` skill; every other skill and
   agent becomes a file under `references/`). `.github/workflows/claude-ai-skill.yml` reruns it on
-  every push to `main` that touches a packaged file and replaces the asset on the
+  every push to `main` that touches `skills/` or `claude-ai/` and replaces the asset on the
   `claude-ai-skill` release, whose URL antwork.io links to. Never rename that release or asset.
 - `README.md` — the command table. **It must stay in sync with `skills/`.**
 

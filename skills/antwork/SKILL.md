@@ -1,6 +1,6 @@
 ---
 name: antwork
-description: Router for the Antwork social-media toolkit. Use when the user wants a multi-step Antwork workflow through its MCP connector — a content calendar, repurposing one piece across platforms, a campaign or launch week, data-driven post ideas, reading an account's voice, an analytics report, or a full social-presence audit. Routes "/antwork <command>" to the right skill. Trigger on "/antwork", "use Antwork to…", or any request to plan, analyze or audit social posting through Antwork.
+description: Router for the Antwork social-media toolkit. Use when the user wants a multi-step Antwork workflow through its MCP connector — posting about what they shipped from a git repo, a content calendar, repurposing one piece across platforms, a campaign or launch week, data-driven post ideas, reading an account's voice, an analytics report, or a full social-presence audit. Routes "/antwork <command>" to the right skill. Trigger on "/antwork", "use Antwork to…", or any request to plan, analyze or audit social posting through Antwork.
 ---
 
 # Antwork — social-media command center
@@ -20,6 +20,7 @@ These skills cover the **multi-step workflows** the server can't spell out on it
 | `/antwork voice [account]` | `antwork-voice` | Read an account's voice from its real posts, or capture one from samples for an account with no history. |
 | `/antwork analytics [range]` | `antwork-analytics` | Pull performance + engagement and synthesize a report. |
 | `/antwork audit` | `antwork-audit` | Full social-presence audit across 5 dimensions + a 0-100 Social Health Score. |
+| `/antwork ship [--since …] [--release <tag>]` | `antwork-ship` | Turn the current repo's recent commits, merged PRs or a release into build-in-public posts. |
 
 Where these skills aren't installed one by one (the claude.ai package), each one's instructions are in `references/<skill-name>.md` next to this file: read that file and follow it as the skill.
 

@@ -74,6 +74,7 @@ SKILLS=(
     "antwork-ideas"
     "antwork-analytics"
     "antwork-audit"
+    "antwork-ship"
 )
 
 # Retired in 1.2.0: the MCP server's own instructions cover single posts,
@@ -89,8 +90,10 @@ done
 SKILL_COUNT=0
 for skill in "${SKILLS[@]}"; do
     if [ -f "$SCRIPT_DIR/skills/$skill/SKILL.md" ]; then
-        mkdir -p "$SKILLS_DIR/$skill"
-        cp "$SCRIPT_DIR/skills/$skill/SKILL.md" "$SKILLS_DIR/$skill/SKILL.md"
+        # The whole folder: since 1.3.0 a skill carries its own templates
+        # (and the audit its agents), so the skills CLI gets them too.
+        rm -rf "${SKILLS_DIR:?}/$skill"
+        cp -R "$SCRIPT_DIR/skills/$skill" "$SKILLS_DIR/$skill"
         echo -e "  ${GREEN}✓${NC} $skill"
         SKILL_COUNT=$((SKILL_COUNT + 1))
     else
@@ -98,21 +101,9 @@ for skill in "${SKILLS[@]}"; do
     fi
 done
 
-# Copy templates alongside the orchestrator so skills can reference them
-echo -e "\n${BLUE}Installing templates...${NC}"
-TEMPLATES_TARGET="$SKILLS_DIR/antwork/templates"
-mkdir -p "$TEMPLATES_TARGET"
-
-TEMPLATE_COUNT=0
-if [ -d "$SCRIPT_DIR/templates" ]; then
-    for template in "$SCRIPT_DIR/templates"/*.md; do
-        if [ -f "$template" ]; then
-            cp "$template" "$TEMPLATES_TARGET/$(basename "$template")"
-            echo -e "  ${GREEN}✓${NC} $(basename "$template")"
-            TEMPLATE_COUNT=$((TEMPLATE_COUNT + 1))
-        fi
-    done
-fi
+# Templates live inside the skills that use them since 1.3.0, so the folder
+# copy above installed them (and replaced the shared antwork/templates/ that
+# older versions created).
 
 # Install agents
 echo -e "\n${BLUE}Installing agents...${NC}"
@@ -126,8 +117,8 @@ AGENTS=(
 
 AGENT_COUNT=0
 for agent in "${AGENTS[@]}"; do
-    if [ -f "$SCRIPT_DIR/agents/$agent.md" ]; then
-        cp "$SCRIPT_DIR/agents/$agent.md" "$AGENTS_DIR/$agent.md"
+    if [ -f "$SCRIPT_DIR/skills/antwork-audit/agents/$agent.md" ]; then
+        cp "$SCRIPT_DIR/skills/antwork-audit/agents/$agent.md" "$AGENTS_DIR/$agent.md"
         echo -e "  ${GREEN}✓${NC} $agent"
         AGENT_COUNT=$((AGENT_COUNT + 1))
     else
@@ -148,7 +139,6 @@ echo -e "${GREEN}╚════════════════════
 echo ""
 echo -e "  Skills installed:    ${GREEN}$SKILL_COUNT${NC} (incl. orchestrator)"
 echo -e "  Agents installed:    ${GREEN}$AGENT_COUNT${NC}"
-echo -e "  Templates installed: ${GREEN}$TEMPLATE_COUNT${NC}"
 echo ""
 echo -e "${YELLOW}Prerequisite:${NC} connect the Antwork MCP server in Claude — see https://antwork.io"
 echo ""

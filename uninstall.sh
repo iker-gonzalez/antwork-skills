@@ -30,6 +30,7 @@ SKILLS=(
     "antwork-engage"
     "antwork-media"
     "antwork-audit"
+    "antwork-ship"
 )
 
 AGENTS=(

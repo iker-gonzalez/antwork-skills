@@ -10,7 +10,7 @@
     {
       "name": "antwork-skills",
       "source": ".",
-      "description": "Antwork social-media toolkit: router + 7 skills + 5 audit agents, with the Antwork MCP server pre-wired.",
+      "description": "Antwork social-media toolkit: router + 8 skills (incl. /antwork ship for build in public) + 5 audit agents, with the Antwork MCP server pre-wired.",
       "category": "integration",
       "keywords": [
         "antwork",
