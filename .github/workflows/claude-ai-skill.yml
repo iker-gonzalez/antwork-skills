@@ -3,7 +3,7 @@ name: claude.ai skill package
 # Rebuilds the claude.ai ZIP whenever a packaged file changes on main and
 # replaces the asset on the `claude-ai-skill` release. That release is the
 # stable download URL antwork.io links to:
-#   https://github.com/iker-gonzalez/antwork-skills/releases/download/claude-ai-skill/antwork-claude-ai-skill.zip
+#   https://github.com/polynode-co/antwork-skills/releases/download/claude-ai-skill/antwork-claude-ai-skill.zip
 # The asset's download_count is the adoption number.
 
 on:

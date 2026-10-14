@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "antwork",
   "owner": {
-    "name": "Iker Gonzalez",
-    "url": "https://github.com/iker-gonzalez"
+    "name": "Polynode",
+    "url": "https://github.com/polynode-co"
   },
   "description": "Official Antwork plugins for Claude Code.",
   "plugins": [

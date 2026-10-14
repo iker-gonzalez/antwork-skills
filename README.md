@@ -1,6 +1,6 @@
 # Antwork: post to LinkedIn, X, Instagram and more from your AI
 
-[![skills.sh](https://skills.sh/b/iker-gonzalez/antwork-skills)](https://skills.sh/iker-gonzalez/antwork-skills)
+[![skills.sh](https://skills.sh/b/polynode-co/antwork-skills)](https://skills.sh/polynode-co/antwork-skills)
 
 **AI assistants have no built-in connector for posting to social media.** To let your assistant draft, schedule and publish posts, you connect it to an MCP server that holds the platform permissions. [Antwork](https://antwork.io?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills) is that server: connect `https://api.antwork.io/mcp` once, sign in with OAuth, and your assistant can post to your connected accounts on **LinkedIn (personal profile or company page), X, Instagram, Facebook Pages, Threads, TikTok, YouTube and Pinterest**. Posts stay drafts until you ask it to schedule or publish them.
 
@@ -12,9 +12,9 @@ Pick your agent. Each line adds the Antwork skills (including [`/antwork ship`](
 
 | Agent | Command |
 |---|---|
-| **Claude Code** (plugin: skills, audit agents and MCP server) | `/plugin marketplace add iker-gonzalez/antwork-skills` then `/plugin install antwork-skills@antwork` |
-| **Codex** (plugin: skills and MCP server) | `codex plugin marketplace add iker-gonzalez/antwork-skills && codex plugin add antwork-skills@antwork && codex mcp login antwork` |
-| **Any agent, skills only** ([skills CLI](https://skills.sh): Claude Code, Codex, Cursor and others) | `npx skills add iker-gonzalez/antwork-skills` |
+| **Claude Code** (plugin: skills, audit agents and MCP server) | `/plugin marketplace add polynode-co/antwork-skills` then `/plugin install antwork-skills@antwork` |
+| **Codex** (plugin: skills and MCP server) | `codex plugin marketplace add polynode-co/antwork-skills && codex plugin add antwork-skills@antwork && codex mcp login antwork` |
+| **Any agent, skills only** ([skills CLI](https://skills.sh): Claude Code, Codex, Cursor and others) | `npx skills add polynode-co/antwork-skills` |
 
 The skills CLI installs skills, not MCP servers, so connect the server once yourself:
 
@@ -122,7 +122,7 @@ Once connected, a good first run is **audit** (where you stand), then **ideas** 
 This repo is also a Claude Code **plugin marketplace**. Installing the plugin wires up the Antwork MCP server *and* all skills + agents in one step:
 
 ```sh
-/plugin marketplace add iker-gonzalez/antwork-skills
+/plugin marketplace add polynode-co/antwork-skills
 /plugin install antwork-skills@antwork
 ```
 
@@ -133,7 +133,7 @@ That's it — the [`antwork` MCP server](.mcp.json) connects automatically (comp
 If you'd rather not use the plugin system, the script copies the skills + agents straight into `~/.claude/` (you still connect the [Antwork MCP](https://antwork.io?utm_source=github&utm_medium=readme&utm_campaign=antwork_skills) yourself):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/iker-gonzalez/antwork-skills/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/polynode-co/antwork-skills/main/install.sh | bash
 ```
 
 Prefer to clone first? `git clone … && cd antwork-skills && ./install.sh`. Remove everything with `./uninstall.sh`.
@@ -153,7 +153,7 @@ It is deliberately not the router above. ClawHub publishes one folder, so a skil
 
 Plugins are Claude Code only, so claude.ai gets the same skills as one upload:
 
-1. Download [`antwork-claude-ai-skill.zip`](https://github.com/iker-gonzalez/antwork-skills/releases/download/claude-ai-skill/antwork-claude-ai-skill.zip).
+1. Download [`antwork-claude-ai-skill.zip`](https://github.com/polynode-co/antwork-skills/releases/download/claude-ai-skill/antwork-claude-ai-skill.zip).
 2. In claude.ai, open Settings, find Skills, and upload the ZIP.
 3. Connect the Antwork connector (see [Connect](#connect)) if you haven't.
 
