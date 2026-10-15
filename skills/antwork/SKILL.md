@@ -31,7 +31,7 @@ If the user just describes intent ("plan next week", "how did last month do?"), 
 - **One post** ("post this to LinkedIn", "schedule a tweet for Tuesday"): `get_post_context` for the account, then `create_post`, then `schedule_post` or `publish_post`. One idea on several accounts: `create_campaign`, then `schedule_campaign` or `publish_campaign`.
 - **Setup and connections** ("connect my X", "my account is disconnected"): `get_connection_urls`. Timezone, posting times and brand identity: `update_workspace`.
 - **Media**: start with `get_post` (or `create_post` for a new draft) and follow the route its response names for this host.
-- **Engagement**: `comment_post` (LinkedIn only), `retry_failed_post` once the failure's cause is fixed, `fetch_platform_posts` for what is live.
+- **Engagement**: `retry_failed_post` once the failure's cause is fixed, `fetch_platform_posts` for what is live.
 
 ## Routing logic
 
