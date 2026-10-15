@@ -46,7 +46,7 @@ Applies to every change, by hand or unattended.
 - Adding or removing a skill also means updating the `SKILLS` list in `install.sh` (a removed one
   goes on its retired list there, and stays in `uninstall.sh` so old installs get cleaned up).
   Otherwise never touch `install.sh`, `uninstall.sh`, or `.mcp.json` unless the issue explicitly asks.
-- **Single steps belong to the server, not here.** Drafting one post, scheduling, media,
-  connections and comments are spelled out in the MCP server's `instructions=` and tool
+- **Single steps belong to the server, not here.** Drafting one post, scheduling, media
+  and connections are spelled out in the MCP server's `instructions=` and tool
   descriptions. A skill that restates them only drifts (antwork-poster, -setup, -media and
   -engage were removed in 1.2.0 for that reason). Skills here are for multi-step workflows.

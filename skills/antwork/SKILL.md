@@ -5,7 +5,7 @@ description: Router for the Antwork social-media toolkit. Use when the user want
 
 # Antwork — social-media command center
 
-Antwork is an MCP-native social-media scheduler. Its MCP server already tells you how to do the single steps: draft a post, schedule or publish it, attach media, connect an account, comment on LinkedIn, retry a failed post. Those need no skill — follow the server's instructions and each tool's description.
+Antwork is an MCP-native social-media scheduler. Its MCP server already tells you how to do the single steps: draft a post, schedule or publish it, attach media, connect an account, retry a failed post. Those need no skill — follow the server's instructions and each tool's description.
 
 These skills cover the **multi-step workflows** the server can't spell out on its own: plans that need approval before any draft, batches that must avoid the existing calendar, reports that turn rows into decisions. This skill is the router.
 
@@ -44,6 +44,6 @@ If the user just describes intent ("plan next week", "how did last month do?"), 
 - **Draft → publish/schedule is two steps.** `create_post` and `create_campaign` create **drafts**. Nothing is scheduled until `schedule_post` / `schedule_campaign` succeeds, and nothing is live until `publish_post` / `publish_campaign` does.
 - **One account per post, its own copy per account.** Several accounts means `create_campaign` with one variant per account, each written for that account. Never one body across many accounts.
 - **Voice comes from the account's own posts.** `get_post_context` returns them; there is no stored voice profile. Call it before writing copy for any account.
-- **Hard limits.** Character limits are per platform (X 280 · Threads 500 · Pinterest 800 · Instagram 2,200 · TikTok 2,200 · LinkedIn 3,000 · YouTube 5,000 · Facebook 63,206). TikTok and YouTube need a video; Instagram and Pinterest need an image or video. Scheduling reaches at most 30 days ahead.
+- **Hard limits.** Character limits are per platform (X 280 · Threads 500 · Pinterest 800 · Instagram 2,200 · TikTok 2,200 · LinkedIn 3,000 · YouTube 5,000 · Facebook 63,206). TikTok and YouTube need a video; Instagram and Pinterest need an image or video. Scheduling reaches at most 30 days ahead. Each account has a daily cap per rolling 24 hours (`get_post_context` returns it as `dailyPostCap`; past it, `daily_cap_reached`) and at most 100 scheduled posts waiting on the free plan, 1,000 paid (`schedule_queue_full`). On X and Threads, a repeat of a recent post (`duplicate_post`) or a post within 30 minutes of another on the same account (`posting_too_close`) is refused: spread a batch out instead of retrying.
 - **Plan before batches.** Anything bigger than one post gets a numbered plan the user approves before the first draft.
 - **Confirm destructive ops.** `delete_post`, `disconnect_social_account` and `delete_media` need the user's go-ahead first.
