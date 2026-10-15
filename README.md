@@ -95,7 +95,7 @@ This repo also adds [Agent Skills](https://docs.claude.com/en/docs/agents-and-to
 | `/antwork audit` | [`antwork-audit`](skills/antwork-audit/SKILL.md) | Full social-presence audit with 5 parallel agents + a 0-100 Social Health Score. |
 | `/antwork ship [--since …] [--release <tag>]` | [`antwork-ship`](skills/antwork-ship/SKILL.md) | Turn the current repo's commits, merged PRs or a release into build-in-public posts, per account, in each account's voice. |
 
-You don't have to type the command — describe the intent ("plan next week", "how did last month do?") and the [router](skills/antwork/SKILL.md) picks the skill. A single post, connecting an account, media and LinkedIn comments need no skill: the connector's own instructions cover them.
+You don't have to type the command — describe the intent ("plan next week", "how did last month do?") and the [router](skills/antwork/SKILL.md) picks the skill. A single post, connecting an account and media need no skill: the connector's own instructions cover them.
 
 ### The audit's parallel agents
 
