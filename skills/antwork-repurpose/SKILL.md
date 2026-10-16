@@ -57,4 +57,4 @@ Never claim a variant is "posted" after only `create_post`. Complete the second 
 
 ## 6. Media carries over, but per platform
 
-If the source has an image or video, attach the right asset to each variant — `attach_media(post_id, media_urls)` (it replaces the post's media, so pass the full set), or `upload_media(image_url)` first for a public/AI-generated image. One asset that suits every platform can go in `create_campaign`'s `media_urls` instead. Don't assume one aspect ratio fits every platform; flag when a visual needs reformatting for, e.g., Instagram vs. LinkedIn.
+If the source has an image or video, attach the right asset to each variant with `add_media` and `attach_to_post_ids` (one call can cover several variants): `media_urls=[...]` for library items, `url=...` for a public or AI-generated image. Use `attach_media(post_id, media_urls)` only to set a post's exact list (reorder, remove, clear). One asset that suits every platform can go in `create_campaign`'s `media_urls` instead. Don't assume one aspect ratio fits every platform; flag when a visual needs reformatting for, e.g., Instagram vs. LinkedIn.
