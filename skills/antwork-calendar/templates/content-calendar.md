@@ -1,6 +1,6 @@
 # Content Calendar — {{workspace}} · {{period}}
 
-Timezone: {{IANA timezone}} · Preferred slots: {{defaultPostingSchedule from get_workspace_settings}}
+Timezone: {{IANA timezone}} · Preferred slots: {{workspace.preferredTimes from get_post_context}}
 Status legend: `idea` → `draft` → `scheduled` → `published`
 
 ## Week of {{start date}}
@@ -18,7 +18,7 @@ Status legend: `idea` → `draft` → `scheduled` → `published`
 ## Notes
 
 - **Themes this period:** {{e.g. Mon = insight, Wed = behind-the-scenes, Fri = proof}}
-- **Do not clash with:** {{existing scheduled posts from get_calendar}}
+- **Do not clash with:** {{existing scheduled posts from list_posts(group_by_day=true)}}
 - **Skipped accounts:** {{account + reason — e.g. dead token, awaiting reconnect}}
 
 ---

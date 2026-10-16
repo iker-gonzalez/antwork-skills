@@ -60,7 +60,7 @@ A changelog is not content. Frame each survivor as one of:
 
 Follow the Antwork drafting protocol exactly:
 
-1. Read `workspaceAccounts` on any workspace-scoped result for the connected accounts. If none are connected, call `get_connection_urls` and stop. Confirm which accounts get posts (or use `--platforms`).
+1. `list_social_accounts` for the connected accounts (re-read only when a result's `connectionsModifiedAt` has moved). If none are connected, call `get_connection_urls` and stop. Confirm which accounts get posts (or use `--platforms`).
 2. Call `get_post_context(account_ids=[...])` once for the chosen accounts. The recent posts it returns **are** each account's voice: its length, tone, emoji and hashtag habits, and whether it writes in first person. Match them. Never impose a house style, and don't assume one account sounds like another.
 3. Write a native version per account. Don't paste one body everywhere: X needs the sharpest line within 280 characters, LinkedIn has room for the lesson (up to 3,000), Threads wants one conversational idea (500). Respect every platform's hard limit.
 4. Create drafts:
@@ -78,8 +78,8 @@ A post lands harder with a receipt: the release page, the PR, a screenshot of th
 
 ## 6. Schedule or publish, only on an explicit yes
 
-- **Schedule:** `get_workspace_settings` for the preferred posting times, `get_calendar` for the days around them so posts don't stack on one slot, then `schedule_post(post_id, scheduled_for)` or `schedule_campaign(campaign_id, scheduled_for)`. At most 30 days ahead.
-- **Publish now:** `publish_post(post_id)` or `publish_campaign(campaign_id)`.
+- **Schedule:** the `workspace` block from `get_post_context` for the preferred posting times, `list_posts(date_from, date_to, group_by_day=true)` for the days around them so posts don't stack on one slot, then `schedule_post(post_id, scheduled_for)` or `schedule_post(campaign_id=..., scheduled_for)`. At most 30 days ahead.
+- **Publish now:** `publish_post(post_id)` or `publish_post(campaign_id=...)`.
 - **Leave as drafts** if the user hasn't said which.
 
 Report what actually happened. Never say "scheduled" when only drafts exist.

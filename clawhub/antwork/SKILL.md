@@ -48,7 +48,7 @@ Match those posts, weighting the ones that performed: pronouns, tone, length, em
 There is **no** `platforms` or `platform_texts` argument. `create_post` writes to a single `account_id` and the platform is derived from that account.
 
 - **One account:** one `create_post`.
-- **Several accounts:** one `create_campaign` call with a variant per account, each with copy reshaped for that platform. They become separate posts under one campaign. Do not reuse one body across platforms — X's 280 characters mangle LinkedIn copy, and LinkedIn-length paragraphs look broken on Threads. `get_post_context(account_ids=[...])` loads every account's voice in one call. Send the set with `schedule_campaign` (same time) or `publish_campaign` (now).
+- **Several accounts:** one `create_campaign` call with a variant per account, each with copy reshaped for that platform. They become separate posts under one campaign. Do not reuse one body across platforms — X's 280 characters mangle LinkedIn copy, and LinkedIn-length paragraphs look broken on Threads. `get_post_context(account_ids=[...])` loads every account's voice in one call. Send the set with `schedule_post(campaign_id=..., scheduled_for)` (same time) or `publish_post(campaign_id=...)` (now). A campaign covers at most 10 posts; more is refused with `too_many_posts`.
 
 ## 4. Character limits are enforced server-side
 
@@ -65,7 +65,7 @@ Keep posts short by default. LinkedIn is the one place where 300–600 words is 
 
 `create_post` creates a **draft**. It does not publish or schedule on its own.
 
-- **Schedule for later:** `create_post` → `schedule_post(post_id, scheduled_for)` with an ISO 8601 time. `get_workspace_settings` gives the workspace's preferred posting times in its own timezone.
+- **Schedule for later:** `create_post` → `schedule_post(post_id, scheduled_for)` with an ISO 8601 time. The `workspace` block of `get_post_context` gives the workspace's `preferredTimes` in its own `timezone`.
 - **Publish now:** `create_post` → `publish_post(post_id)`. It waits up to ~25s and returns the live URL.
 
 Always complete the second step when the user said "schedule" or "post it". Reporting "scheduled!" after only `create_post` is false — the post is sitting in drafts.
@@ -82,7 +82,7 @@ Do not pass `platforms`, `platform_texts`, `tags` or `priority`. The server reje
 
 ## 8. Report results, name failures
 
-`publish_post` returns success or failure plus the live URL. Report one line per account with the link. On failure, name the platform and quote the error rather than saying "publish failed". `retry_failed_post(post_id)` re-attempts a post that failed mid-publish.
+`publish_post` returns success or failure plus the live URL. Report one line per account with the link. On failure, name the platform and quote the error rather than saying "publish failed". `publish_post(post_id)` on a post that failed mid-publish retries it.
 
 ## 9. Analytics is tabular
 
