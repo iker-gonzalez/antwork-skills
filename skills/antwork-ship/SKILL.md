@@ -74,7 +74,7 @@ Show the user every draft. Change what they ask to change with `update_post`.
 
 ## 5. Proof, optional
 
-A post lands harder with a receipt: the release page, the PR, a screenshot of the feature. If the user has an image file and you can run code with it, `request_upload_url` → upload the file to the signed URL → `register_uploaded_media(..., attach_to_post_id=...)`. If you can't, give them the post's `mediaUrl`, which opens it in the Antwork composer with the media picker open. **Show the user each image before attaching:** dashboards and admin pages leak customer names, metrics and config.
+A post lands harder with a receipt: the release page, the PR, a screenshot of the feature. If the user has an image file and you can run code with it, `add_media(upload={}, attach_to_post_ids=[...])`, then one `curl -X PUT --data-binary @<file>` to the returned `uploadUrl`; the reply says which posts it attached to. If you can't, give them the post's `mediaUrl`, which opens it in the Antwork composer with the media picker open. **Show the user each image before attaching:** dashboards and admin pages leak customer names, metrics and config.
 
 ## 6. Schedule or publish, only on an explicit yes
 
