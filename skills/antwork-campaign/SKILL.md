@@ -20,9 +20,8 @@ For launch-shaped campaigns, use `templates/launch-week.md` for the classic arc:
 
 ## 2. Pull context and design the arc
 
-- `get_workspace_settings` — default posting times and timezone.
-- `get_calendar(date_from, date_to)` — so the campaign weaves around existing posts, not on top of them.
-- `get_post_context(account_ids=[...])` — brand plus each account's recent posts, which are its voice. One call for every account in the campaign.
+- `list_posts(date_from, date_to, group_by_day=true)` — so the campaign weaves around existing posts, not on top of them.
+- `get_post_context(account_ids=[...])` — brand, default posting times and timezone, plus each account's recent posts, which are its voice. One call for every account in the campaign.
 
 Design the sequence so each post has a distinct job (tease → reveal → proof → last call), not five rewordings of the same announcement.
 
@@ -47,16 +46,16 @@ Respect hard char limits per platform (X 280, Threads 500, Pinterest 800, IG 220
 
 ## 5. Schedule across the window
 
-Schedule each draft to its slot: `schedule_post(post_id, scheduled_for)` with ISO 8601 timestamps drawn from the optimal times, spread across the campaign days. For a beat that goes out on several accounts at the same moment, `schedule_campaign(scheduled_for, post_ids=[...])` does them in one call. Scheduling reaches at most 30 days ahead; a longer arc keeps its later beats as drafts until they come into range. A draft isn't on the calendar until `schedule_post` succeeds. If a call is blocked (over limit, or `needs_reconnect` with a `reauthUrl`), name the specific post and reason.
+Schedule each draft to its slot: `schedule_post(post_id, scheduled_for)` with ISO 8601 timestamps drawn from the optimal times, spread across the campaign days. For a beat that goes out on several accounts at the same moment, `schedule_post(scheduled_for, post_ids=[...])` does them in one call (at most 10 posts per call; a larger set is refused with `too_many_posts`, so pass the beat's `post_ids` rather than a long campaign's `campaign_id`). Scheduling reaches at most 30 days ahead; a longer arc keeps its later beats as drafts until they come into range. A draft isn't on the calendar until `schedule_post` succeeds. If a call is blocked (over limit, or `needs_reconnect` with a `reauthUrl`), name the specific post and reason.
 
-For a hard launch moment you want live to the second, publish at the moment instead of pre-scheduling: `publish_post(post_id)` for one account, `publish_campaign(post_ids=[...])` for several. Both return live URLs; report them.
+For a hard launch moment you want live to the second, publish at the moment instead of pre-scheduling: `publish_post(post_id)` for one account, `publish_post(post_ids=[...])` for several. Both return live URLs; report them.
 
 ## 6. Track the campaign as it runs
 
-- `list_posts(status="scheduled")` and `get_calendar` — confirm the full arc is queued and see it laid out.
+- `list_posts(status="scheduled")` and `list_posts(group_by_day=true)` — confirm the full arc is queued and see it laid out.
 - `list_posts(campaign_id=...)` pulls exactly the campaign's posts; `list_posts(query=...)` finds posts by keyword.
 - After posts go live, hand off to the `antwork-analytics` skill — filter on the campaign's posts (shared `campaign_id`, per-post `goal`) to measure against the success metric.
-- Any post that failed to publish: `retry_failed_post(post_id)`.
+- Any post that failed to publish: `publish_post(post_id)` retries it.
 
 ## 7. Cleanup
 

@@ -49,9 +49,9 @@ It returns the `campaign_id` and one post per account, so the set can be tracked
 
 Show the drafts side by side (platform → variant) and let the user edit or drop any before anything goes out. Then per the user's intent:
 
-- **Schedule, staggered**: `schedule_post(post_id, scheduled_for)` (ISO 8601) per variant, spread across the day/week using the preferred times from `get_workspace_settings` rather than firing all variants at once. At most 30 days ahead.
-- **Schedule, all at one time**: `schedule_campaign(scheduled_for, campaign_id)`.
-- **Publish now**: `publish_campaign(campaign_id)`. It publishes the whole set in one call and returns live URLs; report them back, one line per account. Don't call `publish_post` once per variant: each one waits on its platform in turn.
+- **Schedule, staggered**: `schedule_post(post_id, scheduled_for)` (ISO 8601) per variant, spread across the day/week using the preferred times from `get_post_context`'s `workspace` block rather than firing all variants at once. At most 30 days ahead.
+- **Schedule, all at one time**: `schedule_post(scheduled_for, campaign_id=...)`.
+- **Publish now**: `publish_post(campaign_id=...)`. It publishes the whole set in one call and returns live URLs; report them back, one line per account. Don't call `publish_post` once per variant: each one waits on its platform in turn.
 
 Never claim a variant is "posted" after only `create_post`. Complete the second step.
 

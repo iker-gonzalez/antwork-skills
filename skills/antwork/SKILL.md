@@ -28,20 +28,20 @@ If the user just describes intent ("plan next week", "how did last month do?"), 
 
 ## Handled directly, without a skill
 
-- **One post** ("post this to LinkedIn", "schedule a tweet for Tuesday"): `get_post_context` for the account, then `create_post`, then `schedule_post` or `publish_post`. One idea on several accounts: `create_campaign`, then `schedule_campaign` or `publish_campaign`.
+- **One post** ("post this to LinkedIn", "schedule a tweet for Tuesday"): `get_post_context` for the account, then `create_post`, then `schedule_post` or `publish_post`. One idea on several accounts: `create_campaign`, then `schedule_post(campaign_id=...)` or `publish_post(campaign_id=...)`.
 - **Setup and connections** ("connect my X", "my account is disconnected"): `get_connection_urls`. Timezone, posting times and brand identity: `update_workspace`.
 - **Media**: one tool, `add_media`, with `attach_to_post_ids` for every target post: `file` for a file attached in ChatGPT, `url` for a public link, `media_urls` / `media_ids` for library items, or `upload={}` when you can run code with the file (then one `curl -X PUT --data-binary` to the returned `uploadUrl`). `attach_media` only sets a post's exact list (reorder, remove, clear). Otherwise give the user the post's `mediaUrl`, which opens it in the Antwork composer with the media picker open. Post results also carry `editUrl` (the post in the composer) and `settingsUrl` (its platform settings, e.g. the TikTok audience, which only the user can choose).
-- **Engagement**: `retry_failed_post` once the failure's cause is fixed, `fetch_platform_posts` for what is live.
+- **Engagement**: `publish_post(post_id)` on a failed post retries it once the failure's cause is fixed, `fetch_platform_posts` for what is live.
 
 ## Routing logic
 
 1. **Resolve the verb.** Map the request to one command above, or to a direct step. When ambiguous, prefer the narrowest: a single post is a direct step, not `antwork-campaign`.
-2. **Check prerequisites once.** Every workflow needs a workspace and a connected account. The `workspaceAccounts` field on any workspace-scoped result lists the accounts; if none are connected, call `get_connection_urls` first.
+2. **Check prerequisites once.** Every workflow needs a workspace and a connected account. `list_social_accounts` lists the connected accounts (call it again only when a result's `connectionsModifiedAt` has moved); if none are connected, call `get_connection_urls` first.
 3. **Hand off — don't reimplement.** Each skill owns its tool sequence. Pass along the user's intent and what you already know (workspace, accounts).
 
 ## Ground truth every workflow must respect
 
-- **Draft → publish/schedule is two steps.** `create_post` and `create_campaign` create **drafts**. Nothing is scheduled until `schedule_post` / `schedule_campaign` succeeds, and nothing is live until `publish_post` / `publish_campaign` does.
+- **Draft → publish/schedule is two steps.** `create_post` and `create_campaign` create **drafts**. Nothing is scheduled until `schedule_post` succeeds, and nothing is live until `publish_post` does. Both take one `post_id`, several `post_ids`, or a `campaign_id` (at most 10 posts per call).
 - **One account per post, its own copy per account.** Several accounts means `create_campaign` with one variant per account, each written for that account. Never one body across many accounts.
 - **Voice comes from the account's own posts.** `get_post_context` returns them; there is no stored voice profile. Call it before writing copy for any account.
 - **Hard limits.** Character limits are per platform (X 280 · Threads 500 · Pinterest 800 · Instagram 2,200 · TikTok 2,200 · LinkedIn 3,000 · YouTube 5,000 · Facebook 63,206). TikTok and YouTube need a video; Instagram and Pinterest need an image or video. Scheduling reaches at most 30 days ahead. Each account has a daily cap per rolling 24 hours (`get_post_context` returns it as `dailyPostCap`; past it, `daily_cap_reached`) and at most 100 scheduled posts waiting on the free plan, 1,000 paid (`schedule_queue_full`). On X and Threads, a repeat of a recent post (`duplicate_post`) or a post within 30 minutes of another on the same account (`posting_too_close`) is refused: spread a batch out instead of retrying.

@@ -35,5 +35,5 @@ One slot = one `create_post` (single account) → `schedule_post(post_id, schedu
 | 10 | T+5 | @handle / x | last call / recap + CTA | {{hook}} | last-call |
 
 ---
-Track with `list_posts(status="scheduled")` and `get_calendar`. After launch,
+Track with `list_posts(status="scheduled")` and `list_posts(group_by_day=true)`. After launch,
 measure the set via `antwork-analytics` (shared `campaign_id`, per-post `goal`).

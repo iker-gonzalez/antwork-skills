@@ -14,7 +14,7 @@ Antwork's analytics tools return **BigQuery-style tabular data** — `{ schema: 
 | "What are my best posts?" | `get_performance(limit)` | Lifetime totals per published post (likes, comments, shares, impressions, totalEngagement). Best for **rankings**. 1–50, default 30. |
 | "How is engagement trending?" | `get_engagement_history(days)` | Daily series per platform + an "all" aggregate, plus platformTotals/rangeTotals. Best for **trends over time**. 1–365 days, default 30. |
 | "How did *this* post grow?" | `get_engagement_history(post_id=..., days?)` | Per-day metrics for one post, both cumulative and daily-delta. Best for **single-post lifecycle**. Omit `days` for full history. |
-| "When should I post?" | `get_workspace_settings()` | The workspace's configured times (`defaultPostingSchedule`) + timezone + selected accounts. |
+| "When should I post?" | `get_post_context()` | Its `workspace` block carries the configured `preferredTimes` + `timezone`. |
 
 Start with `get_performance` for almost any "how am I doing" ask, then drill in with the others.
 

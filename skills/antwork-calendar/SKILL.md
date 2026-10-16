@@ -11,8 +11,8 @@ Antwork is an MCP-native social scheduler. A calendar is just a set of drafts ea
 
 Never schedule into a vacuum. First call:
 
-- `get_calendar(date_from, date_to)` — what's already scheduled or published in the target window. Plan *around* it; don't double-book a slot or repeat a topic that just went out.
-- `get_workspace_settings` — the workspace's configured posting times (`defaultPostingSchedule`) and timezone, plus which accounts are selected per platform. These times are your default slots.
+- `list_posts(date_from, date_to, group_by_day=true)` — what's already scheduled or published in the target window. Plan *around* it; don't double-book a slot or repeat a topic that just went out.
+- `get_post_context` — its `workspace` block holds the configured posting times (`preferredTimes`) and `timezone`. These times are your default slots.
 - `list_social_accounts` — the accounts you can target (with `account_id`, platform, handle, token health). Skip accounts whose `tokenHealthStatus` isn't `healthy` — flag them for reconnect instead of scheduling onto a dead token.
 
 If multiple workspaces exist and none is default, resolve with `set_default_workspace` before anything else.
@@ -42,7 +42,7 @@ Respect the hard character limit for each platform (X 280, Threads 500, Pinteres
 `create_post` produces a **DRAFT**. It does not put the post on the calendar. For each slot:
 
 1. `create_post(text, account_id, hashtags?, goal?)` → returns `post_id`. For a multi-account slot, `create_campaign(variants=[...])` → returns the `campaign_id` and one post per account.
-2. `schedule_post(post_id, scheduled_for)` with an ISO 8601 timestamp at the planned slot, or `schedule_campaign(scheduled_for, campaign_id)` to schedule every post of a multi-account slot at once.
+2. `schedule_post(post_id, scheduled_for)` with an ISO 8601 timestamp at the planned slot, or `schedule_post(scheduled_for, campaign_id=...)` to schedule every post of a multi-account slot at once.
 
 **Scheduling reaches at most 30 days ahead.** A "plan my month" can be planned in full, but slots past day 30 stay drafts: say which ones, and schedule them later.
 
@@ -52,7 +52,7 @@ Only after `schedule_post` succeeds is the post actually on the calendar. Tellin
 
 ## 5. Confirm with the calendar view
 
-After scheduling the batch, call `get_calendar` again for the window and report back the filled grid — date, time, account, hook — so the user sees the whole week at a glance. Note any slots that were skipped and why (dead token, over limit) instead of silently dropping them.
+After scheduling the batch, call `list_posts(date_from, date_to, group_by_day=true)` again for the window and report back the filled grid — date, time, account, hook — so the user sees the whole week at a glance. Note any slots that were skipped and why (dead token, over limit) instead of silently dropping them.
 
 ## 6. Edits and reschedules
 

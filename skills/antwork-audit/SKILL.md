@@ -11,10 +11,10 @@ A comprehensive, data-driven audit of everything the user ships through Antwork.
 
 Before spawning anything, gather the lay of the land so the agents (and the report) reference real accounts and real numbers:
 
-- `whoami` — confirm the user and default workspace.
+- `list_workspaces` — confirm the default workspace (the user's plan and quota are in its `account` field).
 - `list_workspaces` — if more than one and no default, ask which to audit (or `set_default_workspace`).
 - `list_social_accounts` — the connected platforms, handles, and token health. This is the audit's universe.
-- `get_workspace_settings` — timezone, preferred posting times, brand identity.
+- `get_post_context` — its `workspace` block: brand identity, timezone, preferred posting times.
 
 If no accounts are connected, stop: there's nothing to audit yet. Call `get_connection_urls` so the user can connect one.
 
@@ -26,11 +26,11 @@ Launch all five in a single batch so they run concurrently. Each is read-only an
 
 | Dimension | Agent | Weight | Primary MCP tools |
 |---|---|---|---|
-| Performance | `antwork-performance` | 30% | `get_performance`, `get_engagement_history`, `get_workspace_settings` |
+| Performance | `antwork-performance` | 30% | `get_performance`, `get_engagement_history`, `get_post_context` |
 | Voice Consistency | `antwork-voice-analyst` | 20% | `get_post_context` (per account), `list_posts` |
-| Cadence & Timing | `antwork-cadence` | 20% | `list_posts`, `get_calendar`, `get_workspace_settings` |
+| Cadence & Timing | `antwork-cadence` | 20% | `list_posts`, `get_post_context` |
 | Content Quality | `antwork-content` | 20% | `fetch_platform_posts`, `get_post`, `list_posts` |
-| Platform Coverage & Growth | `antwork-growth` | 10% | `list_social_accounts`, `get_workspace_settings` |
+| Platform Coverage & Growth | `antwork-growth` | 10% | `list_social_accounts`, `get_post_context` |
 
 Where subagents exist, don't analyze the dimensions inline: the parallel agents are the point. If one agent fails or returns nothing, note the gap and score that dimension conservatively rather than blocking the report.
 
