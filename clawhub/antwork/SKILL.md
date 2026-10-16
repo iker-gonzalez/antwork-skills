@@ -76,7 +76,7 @@ For a batch, a launch week, or several platforms, present a short numbered plan 
 
 ## 7. Media is attached, not created
 
-`create_post` accepts: `text`, `account_id`, `hashtags`, `goal`, `scheduled_for`, `campaign_id`, `user_tags`, `pinterest_board_id`, `platform_options`, `variants`, `workspace_id`. Media is **not** a create-time field — attach it afterwards with `attach_media`. TikTok and YouTube need a video, Instagram and Pinterest an image or video, so ask for media in the same turn as the draft. Pass `hashtags` as a list with no `#` prefix, and only when the account's own posts use them. A YouTube title goes in `platform_options.title`.
+`create_post` accepts: `text`, `account_id`, `hashtags`, `goal`, `scheduled_for`, `campaign_id`, `user_tags`, `pinterest_board_id`, `platform_options`, `variants`, `workspace_id`. Media is **not** a create-time field — attach it afterwards with `attach_media`. TikTok and YouTube need a video, Instagram and Pinterest an image or video, so ask for media in the same turn as the draft. A local file goes up through `request_upload_url` → `curl -X PUT` to the signed URL → `register_uploaded_media(..., attach_to_post_id=...)`; a public URL through `upload_media(image_url=...)` then `attach_media`. If neither works, give the user the post's `mediaUrl` from the `create_post` result: it opens the post in the Antwork composer with the media picker open. TikTok's audience is the user's choice, not yours: point them to the post's `settingsUrl`. Pass `hashtags` as a list with no `#` prefix, and only when the account's own posts use them. A YouTube title goes in `platform_options.title`.
 
 Do not pass `platforms`, `platform_texts`, `tags` or `priority`. The server rejects unknown fields.
 
