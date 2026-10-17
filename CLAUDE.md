@@ -35,8 +35,12 @@ Applies to every change, by hand or unattended.
   verify against `../antwork.io/agent-service/app/mcp/server.py`, stop and say so rather than
   guessing — a plausible-looking wrong tool name is worse than no change. The server's tools
   change: on 2026-08-24 the stored voice profile went (`prepare_voice_analysis`,
-  `save_voice_analysis`, `voiceStale`), and on 2026-10-03 eight tools were cut (antwork.io
-  #1437). Both times these skills went on naming tools that no longer existed.
+  `save_voice_analysis`, `voiceStale`), on 2026-10-03 eight tools were cut (antwork.io
+  #1437), and on 2026-10-16 `whoami`, `get_workspace_settings`, `get_calendar`,
+  `schedule_campaign`, `publish_campaign` and `retry_failed_post` were folded into
+  `list_workspaces`, `get_post_context`, `list_posts`, `schedule_post` and `publish_post`,
+  then `disconnect_social_account` went web-only (#1868; 22 tools remain).
+  Each time these skills went on naming tools that no longer existed.
 - Facts with a source of truth get checked against it, not memory: character limits live in
   `../antwork.io/src/lib/platforms/common/platform-rules.json`.
 - `clawhub/antwork/SKILL.md` is a self-contained copy of the core rules for OpenClaw's

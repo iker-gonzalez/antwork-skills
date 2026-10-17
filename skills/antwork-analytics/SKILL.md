@@ -1,6 +1,6 @@
 ---
 name: antwork-analytics
-description: Use when the user wants to understand how their social content is performing through Antwork — pulling engagement metrics, ranking top posts, spotting per-platform trends, comparing time periods, or turning numbers into a what-to-do-next report. Trigger on phrases like "how are my posts doing", "what's my best post", "engagement report", "analytics", "which platform is working", "show my growth", "refresh my metrics", or any request for social performance data.
+description: Use when the user wants to understand how their social content is performing through Antwork — pulling engagement metrics, ranking top posts, spotting per-platform trends, comparing time periods, or turning numbers into a what-to-do-next report. Trigger on phrases like "how are my posts doing", "what's my best post", "engagement report", "analytics", "which platform is working", "show my growth", or any request for social performance data.
 ---
 
 # Reporting on performance in Antwork
