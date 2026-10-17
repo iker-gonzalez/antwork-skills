@@ -3,7 +3,7 @@
   "name": "antwork-skills",
   "displayName": "Antwork Skills",
   "description": "Multi-step social-media workflows for the Antwork MCP connector: a /antwork router over 8 skills (ship, calendar, repurpose, campaign, ideas, voice, analytics, audit), 5 parallel audit agents, and the Antwork MCP server pre-wired.",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": {
     "name": "Iker Gonzalez",
     "url": "https://github.com/iker-gonzalez"

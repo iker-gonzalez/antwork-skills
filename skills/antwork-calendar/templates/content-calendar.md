@@ -22,6 +22,6 @@ Status legend: `idea` → `draft` → `scheduled` → `published`
 - **Skipped accounts:** {{account + reason — e.g. dead token, awaiting reconnect}}
 
 ---
-Fill one row per slot. Space rows across the optimal posting times — don't stack.
+Fill one row per slot. Space rows across the preferred posting times — don't stack.
 One row = one `create_post` (single account) → `schedule_post(post_id, scheduled_for)`.
 Posts that should run on multiple accounts get one row each, sharing a `campaign_id`.

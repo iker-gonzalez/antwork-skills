@@ -1,6 +1,6 @@
 ---
 name: antwork-calendar
-description: Use when the user wants to plan and batch-schedule a content calendar through Antwork — filling a week or month with posts across accounts, spacing them at optimal times, and avoiding clashes with what's already scheduled. Trigger on phrases like "plan my week/month of content", "build a posting calendar", "schedule a batch of posts", "fill my calendar", "what should I post this week", or any request to lay out and schedule multiple posts at once.
+description: Use when the user wants to plan and batch-schedule a content calendar through Antwork — filling a week or month with posts across accounts, spacing them at the workspace's preferred times, and avoiding clashes with what's already scheduled. Trigger on phrases like "plan my week/month of content", "build a posting calendar", "schedule a batch of posts", "fill my calendar", "what should I post this week", or any request to lay out and schedule multiple posts at once.
 ---
 
 # Planning a content calendar with Antwork

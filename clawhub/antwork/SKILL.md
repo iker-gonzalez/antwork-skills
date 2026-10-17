@@ -1,7 +1,7 @@
 ---
 name: antwork
 description: Schedule and publish social media posts to LinkedIn, X, Instagram, Threads, Facebook, TikTok, YouTube and Pinterest through Antwork's MCP server. Use when the user wants to draft a post, schedule one for later, publish now, plan a content calendar, check how posts performed, or connect a social account. Handles the draft-then-publish two-step, per-account voice matching, and per-platform character limits.
-version: 1.0.0
+version: 1.0.1
 metadata:
   openclaw:
     emoji: "🐜"
@@ -22,7 +22,7 @@ The skill needs the Antwork MCP server connected. It is a remote server with OAu
 mcporter config add antwork --url https://api.antwork.io/mcp --auth oauth
 ```
 
-Complete the browser prompt and you are connected. A free account is enough: one workspace, two connected social accounts, 20 posts per cycle, and no plan gate on MCP access. Sign up and connect your social accounts at https://antwork.io.
+Complete the browser prompt and you are connected. A free account is enough: two connected social accounts, no monthly post limit (each account has a per-platform daily cap over a rolling 24 hours, returned as `dailyPostCap` by `get_post_context`), and no plan gate on MCP access. Sign up and connect your social accounts at https://antwork.io.
 
 Other agents (Claude, Claude Code, ChatGPT, Cursor, VS Code, Windsurf, Gemini CLI) have their own setup at https://antwork.io/docs/mcp.
 
@@ -90,7 +90,7 @@ Do not pass `platforms`, `platform_texts`, `tags` or `priority`. The server reje
 
 ## 10. Confirm destructive operations
 
-`delete_post`, `disconnect_social_account` and `delete_media` are destructive. Confirm with the user first, then report exactly what was removed.
+`delete_post` and `delete_media` are destructive. Confirm with the user first, then report exactly what was removed. Disconnecting a social account is done in the Antwork web app, not through the connector.
 
 ## Avoid the AI tells
 
@@ -98,4 +98,4 @@ Across every voice, skip openers that read as generated: "Here's the thing:", "L
 
 ## More
 
-The full toolkit — 11 specialized skills for calendars, campaigns, repurposing, voice, audits and analytics — is MIT-licensed at https://github.com/polynode-co/antwork-skills.
+The full toolkit — 8 specialized skills for calendars, campaigns, repurposing, voice, audits and analytics — is MIT-licensed at https://github.com/polynode-co/antwork-skills.

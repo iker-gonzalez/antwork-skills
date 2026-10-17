@@ -15,7 +15,7 @@ NC='\033[0m'
 echo ""
 echo -e "${CYAN}╔══════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║   Antwork Skills — Claude Code Toolkit       ║${NC}"
-echo -e "${CYAN}║   12 Skills · 5 Agents · 5 Templates         ║${NC}"
+echo -e "${CYAN}║   9 Skills · 5 Agents · 5 Templates          ║${NC}"
 echo -e "${CYAN}╚══════════════════════════════════════════════╝${NC}"
 echo ""
 
